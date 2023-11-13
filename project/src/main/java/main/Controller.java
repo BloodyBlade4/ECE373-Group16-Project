@@ -1,11 +1,15 @@
+package main;
 
+import storage.AccountInfo;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import gui.WindowAccountInfo;
 import gui.WindowCreateAccount;
 import gui.WindowForgotPassword;
+import gui.WindowMenu;
 import gui.WindowSignIn;
+import serializer.Serializer;
 
 public class Controller {
 	/* VARIABLES */
@@ -19,6 +23,10 @@ public class Controller {
 	private WindowCreateAccount createAccountWindow;
 	private WindowAccountInfo accountInfoWindow;
 	private WindowForgotPassword forgotPasswordWindow;
+	private WindowMenu menuWindow;
+	
+	private String username = null;
+	private String password = null;
 	
 	
 	public static void main(String[] args) {
@@ -27,6 +35,7 @@ public class Controller {
 	
 	
 	public Controller() {
+
 		
 		
 		System.out.println("Heyo, the program is starting.");
@@ -69,11 +78,19 @@ public class Controller {
 		ActionListener submitCreateAccount = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("submit create Account button hit.");
-				String username = createAccountWindow.getTextFieldUsername().getText();
-				String password = createAccountWindow.getTextFieldPassword().getText();
+				username = createAccountWindow.getTextFieldUsername().getText();
+				password = createAccountWindow.getTextFieldPassword().getText();
 				System.out.println("The username and password are: " + username + ", " + password);
 				
 				//verify that the account is available
+				if (Serializer.accountNameExists(username)) {
+					//TODO: Warn the user that the name already exists. Ask if they'd like to return to the 
+					//sign in screen. 
+					System.out.println("Account name already exists!");
+					return;
+				}
+			
+
 				
 				//change state to submitAccountInfo. 
 				hideAllWindows();
@@ -84,15 +101,23 @@ public class Controller {
 		ActionListener submitAccountInfo = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				System.out.println("submit account info button hit.");
-				String seqQOne = accountInfoWindow.getTextFieldSecQOne().getText();
-				String seqAOne = accountInfoWindow.getTextFieldSecAOne().getText();
-				System.out.println(seqQOne + ". Answer: " + seqAOne);
+				String secQOne = accountInfoWindow.getTextFieldSecQOne().getText();
+				String secAOne = accountInfoWindow.getTextFieldSecAOne().getText();
+				System.out.println(secQOne + ". Answer: " + secAOne);
 				
 				//Verify the information.
 				
+				//create new account object
+				AccountInfo newAccount = new AccountInfo(username, password,
+						secQOne, secAOne);
+				
 				//write information to storage
+				Serializer.addAccount(newAccount);
 				
 				//update state to main menu/signed in. 
+				
+
+				
 			}
 		};
 		

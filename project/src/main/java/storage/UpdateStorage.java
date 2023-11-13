@@ -16,7 +16,7 @@ public class UpdateStorage {
 		
 		//Either fill an AccountInfo object and return it, or return a way to inform the user information was incorrect. 
 		
-		return new AccountInfo();
+		return new AccountInfo("k","k", "k", "k");
 	}
 	
 	
