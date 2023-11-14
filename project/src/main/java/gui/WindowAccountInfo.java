@@ -25,7 +25,6 @@ public class WindowAccountInfo extends JFrame{
 	
 	public WindowAccountInfo(ActionListener submitAccountInfo) {
 		super("Create Account");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(300, 400);
 		this.setLocationRelativeTo(null); //Center of screen.
 		getContentPane().setLayout(new BorderLayout(0, 0));

@@ -11,6 +11,26 @@ import gui.WindowMenu;
 import gui.WindowSignIn;
 import serializer.Serializer;
 
+
+/*
+ * TODO:
+ * 1. Set up the account info window. This needs to be able to update user information, but NOT PASSWORD. currently, user password is used in encryption.
+ * 2. Set up required formatting for different fields, and could use JPasswordField for password security. 
+ * 3. Figure out file storage. Ideas:
+ * 		-  The user will have selected a home directory to store encrypted files in
+ * 		- Using the file navigation in Swing is fairly easy. Users can select files like this. 
+ * 		- prompt users if they want to delete the file after encryption/decryption. 
+ * 4. include all fields when creating an account. 
+ * 5. Figure out how to encrypt/decrypt files. 
+ * 6. implement the file storage gui and application. 
+ * 
+ * 
+ * Future steps:
+ * - follow exceptions through and ensure their keeping.
+ * - clean up gui using the styling file.
+ * - clean coding using helper funcitons. 
+ */
+
 public class Controller {
 	/* VARIABLES */
 	public enum State {
@@ -60,6 +80,12 @@ public class Controller {
 			}
 		};
 		
+		ActionListener openAccountInfo = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				accountInfoWindow.setVisible(true);
+			}
+		};
+		
 		
 		
 		
@@ -86,6 +112,8 @@ public class Controller {
 					return;
 				}
 				System.out.println("Success!");
+				hideAllWindows();
+				menuWindow.setVisible(true);
 			}
 		};
 		ActionListener submitCreateAccount = new ActionListener() {
@@ -95,15 +123,7 @@ public class Controller {
 				password = createAccountWindow.getTextFieldPassword().getText();
 				System.out.println("The username and password are: " + username + ", " + password);
 				
-				//TODO: verify that the account is available
-				if (Serializer.accountNameExists(username)) {
-					//TODO: Warn the user that the name already exists. Ask if they'd like to return to the 
-					//sign in screen. 
-					System.out.println("Account name already exists!");
-					return;
-				}
-			
-
+				//TODO: Verify the information. formatting, etc. 
 				
 				//change state to submitAccountInfo. 
 				hideAllWindows();
@@ -126,13 +146,14 @@ public class Controller {
 				
 				//write information to storage
 				try {
-				Serializer.addAccount(newAccount);
+					Serializer.addAccount(newAccount);
 				} catch (Exception e1) {
 					System.out.println(e1);
 				}
 				
-				//TODO: update state to main menu/signed in. 
-				
+				//TODO: update any info for the user?
+				hideAllWindows();
+				menuWindow.setVisible(true);
 			}
 		};
 		
@@ -143,6 +164,8 @@ public class Controller {
 		createAccountWindow = new WindowCreateAccount(submitCreateAccount, 
 				signInStateChange, forgotPasswordStateChange);
 		accountInfoWindow = new WindowAccountInfo(submitAccountInfo);
+		menuWindow = new WindowMenu(openAccountInfo);
+		
 		
 	}
 	
