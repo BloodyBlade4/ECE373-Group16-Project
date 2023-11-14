@@ -1,10 +1,14 @@
 package serializer;
 
 import storage.AccountInfo;
+import storage.UpdateStorage;
 
 import java.io.File;
 import java.nio.file.*;
 import org.jasypt.encryption.pbe.*;
+import org.jasypt.iv.RandomIvGenerator;
+
+import java.util.ArrayList;
 import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -59,43 +63,82 @@ public class Serializer {
 		
 	}
 	
-	public static void addAccount(AccountInfo newAccount) {
-		//Get file
+	public static void addAccount(AccountInfo newAccount) throws Exception{
+		//TODO: encrypt newAccount via password
+		AccountInfo acc = encryptAccountInfo(newAccount);
+		
+		//Send off to update storage
+		UpdateStorage.writeAccount(acc);
+	}
+	
+	//bubble exceptions to controller.
+	public static AccountInfo logIn(String username, String password) throws Exception{
+		//TODO: Encrypt the info based on the password
+		
+		
+		//get the accounts. 
+		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
 
-		File dir;
-		try {
-			dir = findPropertiesFile().toFile();
-		} catch (Exception e) {
-			// TODO Warn the user there is an issue finding the properties file.. 
-			//This could be due to different platforms such as mac/linux. Addapt for these.
-			//exit.
-			e.printStackTrace();
-			return;
-		}
-
-		//Write to file. 
-		Properties props = new Properties();
-		FileInputStream fileIn = null;
-		FileOutputStream fileOut = null;
-		try {
-			fileIn = new FileInputStream(dir);
-			props.load(fileIn);
-			props.setProperty("Accounts", newAccount.getInfoAsString());
-			fileOut = new FileOutputStream(dir);
-			props.store(fileOut, "sample properties");
-		} catch (Exception e) {
-			//TODO, exception writing!
-			e.printStackTrace();
-		} finally {
-			try {
-				fileOut.close();
-			} catch (IOException e2) {
-				e2.printStackTrace();
+		
+		//See if the accounts list contains the username. 
+		System.out.println("accounts is: " + accounts.toString());
+		for (AccountInfo acc : accounts) {
+			
+			//account found
+			if (decryptString(acc.getName(), password).equals(username)) {
+				if (decryptString(acc.getPassword(), password).equals(password))
+					return acc;	
 			}
 		}
 		
 		
+		return null;
+	}
+	
+	private static AccountInfo encryptAccountInfo(AccountInfo account) {
+		String password = account.getPassword();
+		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+		encryptor.setPassword(password);                         // we HAVE TO set a password
+		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");// optionally set the algorithm
+		System.out.println("Why isn't this encrypting?");
 		
+		return new AccountInfo(
+				encryptor.encrypt(account.getName()),
+				encryptor.encrypt(account.getPassword()),
+				encryptor.encrypt(account.getSecQ1()),
+				encryptor.encrypt(account.getSecAns1())
+				);
+		
+	}
+	private static AccountInfo decryptAccountInfo(AccountInfo account, String password) {
+		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+		encryptor.setPassword(password);                         // we HAVE TO set a password
+		encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");// optionally set the algorithm
+		
+		return new AccountInfo(
+				encryptor.decrypt(account.getName()),
+				encryptor.decrypt(account.getPassword()),
+				encryptor.decrypt(account.getSecQ1()),
+				encryptor.decrypt(account.getSecAns1())
+				);
+		
+	}
+	
+	private static String encryptString(String toEncrypt, String password) {
+		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+		encryptor.setPassword(password);                         // we HAVE TO set a password
+		encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");   // optionally set the algorithm
+		// what's this for? encryptor.setIvGenerator(new RandomIvGenerator());
+		
+		return encryptor.encrypt(toEncrypt);
+	}
+	private static String decryptString(String toDecrypt, String password) {
+		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
+		encryptor.setPassword(password);                         // we HAVE TO set a password
+		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");   // optionally set the algorithm
+		// what's this for? encryptor.setIvGenerator(new RandomIvGenerator());
+		
+		return encryptor.decrypt(toDecrypt);
 	}
 	
 	public static Boolean accountNameExists(String username) {
@@ -103,16 +146,7 @@ public class Serializer {
 		return false;
 	}
 	
-	public static Path findPropertiesFile() throws Exception{
-		String DATA_DIR = System.getenv("APPDATA") + "\\LockBox";
-		String DATA_FILE = "/AccountStorage.properties";
-		Path dir = Paths.get(DATA_DIR);
-		if (!Files.exists(dir)) {Files.createDirectory(dir);}
-		
-		Path file = Paths.get(DATA_DIR + DATA_FILE);
-		if (!Files.exists(file)) {Files.createFile(file);}
-		return file;
-	}
+
 	
 	
 	//Used for comparing passwords and the like.

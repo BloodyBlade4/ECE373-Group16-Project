@@ -71,8 +71,21 @@ public class Controller {
 				System.out.println("The username and password are: " + username + ", " + password);
 				
 				//Verify the information.
+				AccountInfo account = null;
+				try {
+					account = Serializer.logIn(username, password);
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				
 				//change state or warn user. 
+				if (account == null) {
+					//TODO: Prompt the user that the information is incorrect.
+					System.out.println("Incorrect user information.");
+					return;
+				}
+				System.out.println("Success!");
 			}
 		};
 		ActionListener submitCreateAccount = new ActionListener() {
@@ -82,7 +95,7 @@ public class Controller {
 				password = createAccountWindow.getTextFieldPassword().getText();
 				System.out.println("The username and password are: " + username + ", " + password);
 				
-				//verify that the account is available
+				//TODO: verify that the account is available
 				if (Serializer.accountNameExists(username)) {
 					//TODO: Warn the user that the name already exists. Ask if they'd like to return to the 
 					//sign in screen. 
@@ -105,18 +118,20 @@ public class Controller {
 				String secAOne = accountInfoWindow.getTextFieldSecAOne().getText();
 				System.out.println(secQOne + ". Answer: " + secAOne);
 				
-				//Verify the information.
+				//TODO: Verify the information. formatting, etc.
 				
 				//create new account object
 				AccountInfo newAccount = new AccountInfo(username, password,
 						secQOne, secAOne);
 				
 				//write information to storage
+				try {
 				Serializer.addAccount(newAccount);
+				} catch (Exception e1) {
+					System.out.println(e1);
+				}
 				
-				//update state to main menu/signed in. 
-				
-
+				//TODO: update state to main menu/signed in. 
 				
 			}
 		};
