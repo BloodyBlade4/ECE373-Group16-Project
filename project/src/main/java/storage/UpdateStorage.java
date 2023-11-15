@@ -8,32 +8,19 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /*
- * Used to interact with encrypted files/user information. A kind of service for the inbetween stages
+ * Used to interact with encrypted files/user information. A kind of service for the in-between stages
+ * 
+ * ALL exceptions bubbled upwards.
  */
 
 public class UpdateStorage {
-	
-	//Finds the account upon user signing in
-	public AccountInfo retrieveAccount(String name, String password) {
-		//Grab the list of account info's from storage. 
-		
-		//Use the serializer to usernames one by one. 
-		
-		//When the correct username is found, compare passwords. 
-		
-		//Either fill an AccountInfo object and return it, or return a way to inform the user information was incorrect. 
-		
-		return new AccountInfo("k","k", "k", "k","k","k","k","k","k");
-	}
 	
 	//bubble any exceptions back to serializer. 
 	public static void writeAccount(AccountInfo encryptedAccount) throws Exception {
@@ -42,34 +29,25 @@ public class UpdateStorage {
 		try {
 			p = findPropertiesFile();
 		} catch (Exception e) {
-			// TODO Warn the user there is an issue finding the properties file.. 
+			//TODO: Warn the user there is an issue finding the properties file.. 
 			//This could be due to different platforms such as mac/linux. Addapt for these.
-			//exit.
 			e.printStackTrace();
 			throw new Exception("Error finding or creating file! " + e);
 		}
 		ObjectMapper mapper = new XmlMapper();
 		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
 		
+		//Get the current list of accounts and add the new one to it.
 		ArrayList<AccountInfo> accounts = readAccountStorage(p);
-		System.out.println("Finished reading xml.");
 		accounts.add(encryptedAccount);
-		System.out.println("Accountlist is now: " + accounts);
-		try {
-			//rewrite the file with the new account added.
-			mapper.writeValue(Files.newOutputStream(p), accounts);
-		} catch (JsonGenerationException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (JsonMappingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 		
-			
+		//rewrite the file with the new account added.
+		try {
+			mapper.writeValue(Files.newOutputStream(p), accounts);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error writing to the file. " + e);
+		}		
 	}
 	
 	public static ArrayList<AccountInfo> readAccountStorage(Path p) throws Exception{

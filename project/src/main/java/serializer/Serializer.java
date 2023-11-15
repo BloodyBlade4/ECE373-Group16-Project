@@ -16,12 +16,44 @@ import storage.UpdateStorage;
 /*
  * Files and information is serialized to protect/lock it from being interacted with by outside users or anything else 
  * 
- * We will be using Password-Based Encryption (PBE) 
+ * utilizes Password-Based Encryption (PBE) 
  * For additional information and implementation, refer to Jasypt's official documentation: http://www.jasypt.org/general-usage.html
+ * 
+ * 
+ * ALL exceptions bubbled back up to the caller. 
  */
 
 public class Serializer {
+	public static void addAccount(AccountInfo newAccount) throws Exception{
+		AccountInfo acc = encryptAccountInfo(newAccount);
+		
+		//Send off to update storage
+		UpdateStorage.writeAccount(acc);
+	}
 	
+	public static AccountInfo logIn(String username, String password) throws Exception{
+		//get the accounts. 
+		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
+		
+		//See if the accounts list contains the username. 
+		System.out.println("accounts is: " + accounts.toString());
+		for (AccountInfo acc : accounts) {
+			
+			//account found
+			if (decryptString(acc.getName(), password).equals(username)) {
+				if (decryptString(acc.getPassword(), password).equals(password)) {
+					return decryptAccountInfo(acc, password);	
+				}
+			}
+		}
+		return null;
+	}
+	
+	
+	
+	
+	
+	/* File Handling */
 	//takes the location of the file to encrypt, and the users password.
 	public void encryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
 		encryptFile(Paths.get(loc), password, deleteOld, homeDir);
@@ -99,40 +131,14 @@ public class Serializer {
 		}		
 	}
 	
-	public static void addAccount(AccountInfo newAccount) throws Exception{
-		//TODO: encrypt newAccount via password
-		AccountInfo acc = encryptAccountInfo(newAccount);
-		
-		//Send off to update storage
-		UpdateStorage.writeAccount(acc);
-	}
 	
-	//bubble exceptions to controller.
-	public static AccountInfo logIn(String username, String password) throws Exception{
-		//get the accounts. 
-		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
-
-		
-		//See if the accounts list contains the username. 
-		System.out.println("accounts is: " + accounts.toString());
-		for (AccountInfo acc : accounts) {
-			
-			//account found
-			if (decryptString(acc.getName(), password).equals(username)) {
-				if (decryptString(acc.getPassword(), password).equals(password)) {
-					return decryptAccountInfo(acc, password);	
-				}
-			}
-		}
-		return null;
-	}
 	
-	private static AccountInfo encryptAccountInfo(AccountInfo account) {
+	
+	/*AccountInfo Object handling */
+	private static AccountInfo encryptAccountInfo(AccountInfo account) throws Exception{
 		String password = account.getPassword();
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password
-		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");// optionally set the algorithm
-		System.out.println("Why isn't this encrypting?");
 		
 		return new AccountInfo(
 				encryptor.encrypt(account.getName()),
@@ -147,7 +153,7 @@ public class Serializer {
 				);
 		
 	}
-	private static AccountInfo decryptAccountInfo(AccountInfo account, String password) {
+	private static AccountInfo decryptAccountInfo(AccountInfo account, String password) throws Exception {
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password
 		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");// optionally set the algorithm
@@ -166,6 +172,9 @@ public class Serializer {
 		
 	}
 	
+	
+	
+	/* String handling */
 	private static String encryptString(String toEncrypt, String password) {
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password
@@ -183,10 +192,4 @@ public class Serializer {
 		return encryptor.decrypt(toDecrypt);
 	}
 
-	
-	//Used for comparing passwords and the like.
-	public Boolean compareUnserializedToSerialized(String unserialized, String serialized) {
-		
-		return false;
-	}
 }

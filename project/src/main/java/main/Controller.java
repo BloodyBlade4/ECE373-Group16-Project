@@ -23,9 +23,8 @@ import serializer.Serializer;
  * 		-  The user will have selected a home directory to store encrypted files in
  * 		- Using the file navigation in Swing is fairly easy. Users can select files like this. 
  * 		- prompt users if they want to delete the file after encryption/decryption. 
- * 4. include all fields when creating an account. 
- * 5. Figure out how to encrypt/decrypt files. 
- * 6. implement the file storage gui and application. 
+ * 4. ForgotPassword window!
+ * 6. implement the file storage gui
  * 
  * 
  * Future steps:
@@ -36,10 +35,6 @@ import serializer.Serializer;
 
 public class Controller {
 	/* VARIABLES */
-	public enum State {
-		LogIn, SignIn, AccountCreation, MainMenu, 
-	}
-	private Controller.State curState = State.LogIn;
 	
 	
 	private WindowSignIn signInWindow;
@@ -79,7 +74,6 @@ public class Controller {
 				signInWindow.setVisible(true);
 			}
 		};
-		
 		ActionListener openAccountInfo = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				accountInfoWindow.setVisible(true);
@@ -88,21 +82,19 @@ public class Controller {
 		
 		
 		
-		
 		ActionListener submitSignIn = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("submit sign in button hit.");
 				String username = signInWindow.getTextFieldUsername().getText();
 				String password = signInWindow.getTextFieldPassword().getText();
-				System.out.println("The username and password are: " + username + ", " + password);
 				
 				//Verify the information.
 				AccountInfo account = null;
 				try {
 					account = Serializer.logIn(username, password);
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+					FileHelper.errorMessage("Error", "There has been an issue compairing your information with the information on this device."+
+							"\nPlease try again. \n" + e1);
+					return;
 				}
 				
 				//change state or warn user. 
@@ -112,9 +104,7 @@ public class Controller {
 					return;
 				}
 				curAccount = account;
-				curAccount.printInfo();
 				
-				System.out.println("Success!");
 				hideAllWindows();
 				menuWindow.setVisible(true);
 			}
@@ -134,30 +124,33 @@ public class Controller {
 			}
 		};
 		
-		ActionListener submitAccountInfo = new ActionListener() {
+		ActionListener submitForgotPassword = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("submit account info button hit.");
-				String secQOne = accountInfoWindow.getTextFieldSecQOne().getText();
-				String secAOne = accountInfoWindow.getTextFieldSecAOne().getText();
-				System.out.println(secQOne + ". Answer: " + secAOne);
 				
+			}
+		};
+		
+		
+		ActionListener submitAccountInfo = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {		
 				//TODO: Verify the information. formatting, etc.
 				
 				//create new account object
 				curAccount = new AccountInfo(username, password,
-						secQOne, secAOne,
+						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecAOne().getText(),
 						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecATwo().getText(),
 						accountInfoWindow.getTextFieldSecQThree().getText(), accountInfoWindow.getTextFieldSecAThree().getText(),
 						accountInfoWindow.getHomeDir());
-				curAccount.printInfo();
+
 				//write information to storage
 				try {
 					Serializer.addAccount(curAccount);
 				} catch (Exception e1) {
-					System.out.println(e1);
+					FileHelper.errorMessage("Error", "Not able to add your account. Please try again. \n " + e1);
+					e1.printStackTrace();
+					return;
 				}
 				
-				//TODO: update any info for the user?
 				hideAllWindows();
 				menuWindow.setVisible(true);
 			}
@@ -184,9 +177,14 @@ public class Controller {
 			}
 		};
 		
+		
+		
+		/* Windows */
 		signInWindow = 
 				new WindowSignIn(submitSignIn, forgotPasswordStateChange,createAccountStateChange);
 		signInWindow.setVisible(true);
+		//TODO: Forgotpassword window!! 
+		//forgotPasswordWindow = new forgotPasswordWindow();
 		createAccountWindow = new WindowCreateAccount(submitCreateAccount, 
 				signInStateChange, forgotPasswordStateChange);
 		accountInfoWindow = new WindowAccountInfo(submitAccountInfo);
@@ -205,17 +203,5 @@ public class Controller {
 		if(this.forgotPasswordWindow != null)
 			this.forgotPasswordWindow.setVisible(false);
 		
-	}
-	
-	
-	
-	
-	/* Getters and Setters */
-	//TODO: ADD VERIFICATION FOR EACH STATE!
-	public void setState(Controller.State s) {
-		this.curState = s;
-	}
-	public Controller.State getState() {
-		return this.curState;
 	}
 }
