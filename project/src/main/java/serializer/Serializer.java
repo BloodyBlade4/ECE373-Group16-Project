@@ -10,6 +10,7 @@ import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 
 import storage.AccountInfo;
+import storage.FileHelper;
 import storage.UpdateStorage;
 
 /*
@@ -36,46 +37,66 @@ public class Serializer {
 			data = Files.readAllBytes(p);
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
+			FileHelper.errorMessage("Error", "Unable to open the selected file " + p.getFileName() + ". " + e);
 			e.printStackTrace();
 		}
 		
 		//create new file for the serialized information
-		//TODO!!!! Home directory isn't being saved to the userInfo.. 
-		//encryption, however, seems to be working. 
-		String outputFile = homeDir + "/testing.txt";
-		System.out.println("Writing file now with " + encryptor.encrypt(data));
-		System.out.println("writing into " + outputFile);
+		String outputFile = homeDir + "/testing_serialized.txt";
 		try {
 			Files.write(Paths.get(outputFile), encryptor.encrypt(data));
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			FileHelper.errorMessage("Error", "Unable to encrypt file. " + e);
 			e.printStackTrace();
-		}
-		
-		//read through the old file and encrypt the data into the new file
-			//uses the method encryptor.encrypt(Text). 
+		} 
 		
 		//Do we delete the old file?
+		if(deleteOld) {
+			try {Files.delete(p);}
+			catch (IOException e) {
+				FileHelper.errorMessage("Error", "Could not delete file \"" + p.getFileName() + "\"");
+			}
+		}
 		
 	}
 	
 	//takes the location of the file to decrypt, and the users password. 
-	public void decryptFile(String loc, String password) {
-		decryptFile(Paths.get(loc), password);
+	public void decryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
+		decryptFile(Paths.get(loc), password, deleteOld, homeDir);
 	}
-	public void decryptFile(Path loc, String password) {
+	public static void decryptFile(Path p, String password, Boolean deleteOld, String homeDir) {
 		//create encryption object. 
 		StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();
 		encryptor.setPassword(password);
 		
+		byte[] data = null;
+		try {
+			data = Files.readAllBytes(p);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			FileHelper.errorMessage("Error", "Unable to open the selected file " + p.getFileName() + ". " + e);
+			e.printStackTrace();
+		}
 		
-		//create new file for the decrypted information
-		
-		//read through the old file and decrypt the data into the new file
-			//uses the method encryptor.decrypt(Text). 
+		//create new file for the serialized information
+		String outputFile = homeDir + "/testing_deserialized.txt";
+		System.out.println("will deserialize to: " + outputFile);
+		try {
+			Files.write(Paths.get(outputFile), encryptor.decrypt(data));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			FileHelper.errorMessage("Error", "Unable to decrypt file. " + e);
+			e.printStackTrace();
+		} 
 		
 		//Do we delete the old file?
-		
+		if(deleteOld) {
+			try {Files.delete(p);}
+			catch (IOException e) {
+				FileHelper.errorMessage("Error", "Could not delete file \"" + p.getFileName() + "\"");
+			}
+		}		
 	}
 	
 	public static void addAccount(AccountInfo newAccount) throws Exception{
@@ -98,8 +119,9 @@ public class Serializer {
 			
 			//account found
 			if (decryptString(acc.getName(), password).equals(username)) {
-				if (decryptString(acc.getPassword(), password).equals(password))
-					return acc;	
+				if (decryptString(acc.getPassword(), password).equals(password)) {
+					return decryptAccountInfo(acc, password);	
+				}
 			}
 		}
 		return null;
@@ -116,20 +138,30 @@ public class Serializer {
 				encryptor.encrypt(account.getName()),
 				encryptor.encrypt(account.getPassword()),
 				encryptor.encrypt(account.getSecQ1()),
-				encryptor.encrypt(account.getSecAns1())
+				encryptor.encrypt(account.getSecAns1()),
+				encryptor.encrypt(account.getSecQ2()),
+				encryptor.encrypt(account.getSecAns2()),
+				encryptor.encrypt(account.getSecQ3()),
+				encryptor.encrypt(account.getSecAns3()),
+				encryptor.encrypt(account.getHomeDirectory())
 				);
 		
 	}
 	private static AccountInfo decryptAccountInfo(AccountInfo account, String password) {
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password
-		encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");// optionally set the algorithm
+		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");// optionally set the algorithm
 		
 		return new AccountInfo(
 				encryptor.decrypt(account.getName()),
 				encryptor.decrypt(account.getPassword()),
 				encryptor.decrypt(account.getSecQ1()),
-				encryptor.decrypt(account.getSecAns1())
+				encryptor.decrypt(account.getSecAns1()),
+				encryptor.decrypt(account.getSecQ2()),
+				encryptor.decrypt(account.getSecAns2()),
+				encryptor.decrypt(account.getSecQ3()),
+				encryptor.decrypt(account.getSecAns3()),
+				encryptor.decrypt(account.getHomeDirectory())
 				);
 		
 	}
@@ -150,14 +182,7 @@ public class Serializer {
 		
 		return encryptor.decrypt(toDecrypt);
 	}
-	
-	public static Boolean accountNameExists(String username) {
-		//TODO: Search through the provided file to see if the name is already in use. 
-		return false;
-	}
-	
 
-	
 	
 	//Used for comparing passwords and the like.
 	public Boolean compareUnserializedToSerialized(String unserialized, String serialized) {

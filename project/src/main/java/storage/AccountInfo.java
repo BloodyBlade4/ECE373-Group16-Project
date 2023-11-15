@@ -17,14 +17,6 @@ public class AccountInfo {
 	public AccountInfo() {};
 	
 	public AccountInfo(String name, String password,
-			String secQOne, String secAnsOne) {
-		this.name = name;
-		this.password = password;
-		this.secQ1 = secQOne;
-		this.secAns1 = secAnsOne;
-	}
-	
-	public AccountInfo(String name, String password,
 			String secQOne, String secAnsOne,
 			String secQTwo, String secATwo,
 			String secQThree, String secAThree, String homeDir) {
@@ -44,6 +36,18 @@ public class AccountInfo {
 		return (name+","+password+","+secQ1+","+secAns1);
 	}
 	*/
+	public void printInfo() {
+		System.out.println("Account info is: " + 
+				"\nName: " + this.name +
+				"\npassword: " + this.password +
+				"\nsecQ1: " + this.secQ1 +
+				"\nsecA1: " + this.secAns1 +
+				"\nsecQ2: " + this.secQ2 +
+				"\nsecA2: " + this.secAns2 +
+				"\nsecQ3: " + this.secQ3 +
+				"\nsecA3: " + this.secAns3 +
+				"\nHome Directory: " + this.homeDirectory);
+	}
 
 	public String getName() {
 		return name;

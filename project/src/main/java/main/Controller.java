@@ -112,6 +112,7 @@ public class Controller {
 					return;
 				}
 				curAccount = account;
+				curAccount.printInfo();
 				
 				System.out.println("Success!");
 				hideAllWindows();
@@ -148,7 +149,7 @@ public class Controller {
 						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecATwo().getText(),
 						accountInfoWindow.getTextFieldSecQThree().getText(), accountInfoWindow.getTextFieldSecAThree().getText(),
 						accountInfoWindow.getHomeDir());
-				System.out.println("Home dir is: " + accountInfoWindow.getHomeDir());
+				curAccount.printInfo();
 				//write information to storage
 				try {
 					Serializer.addAccount(curAccount);
@@ -166,7 +167,19 @@ public class Controller {
 			public void actionPerformed(ActionEvent e) {
 				Path toEncryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to encrypt", 
 						"Text files?" , "txt");
+				if (toEncryptPath == null)
+					return;
 				Serializer.encryptFile(toEncryptPath, curAccount.getPassword(), 
+						false /*delete old*/, curAccount.getHomeDirectory());
+			}
+		};
+		ActionListener decryptFile = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Path toDecryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to decrypt", 
+						"Text files?" , "txt");
+				if (toDecryptPath == null)
+					return;
+				Serializer.decryptFile(toDecryptPath, curAccount.getPassword(), 
 						false /*delete old*/, curAccount.getHomeDirectory());
 			}
 		};
@@ -177,7 +190,7 @@ public class Controller {
 		createAccountWindow = new WindowCreateAccount(submitCreateAccount, 
 				signInStateChange, forgotPasswordStateChange);
 		accountInfoWindow = new WindowAccountInfo(submitAccountInfo);
-		menuWindow = new WindowMenu(openAccountInfo, encryptFile);
+		menuWindow = new WindowMenu(openAccountInfo, encryptFile, decryptFile);
 		
 		
 	}

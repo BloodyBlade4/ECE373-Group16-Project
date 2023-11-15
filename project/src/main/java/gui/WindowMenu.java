@@ -19,7 +19,7 @@ public class WindowMenu extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public WindowMenu(ActionListener openAccountInfo, ActionListener encryptFile) {
+	public WindowMenu(ActionListener openAccountInfo, ActionListener encryptFile, ActionListener decryptFile) {
 		/* INITIALIZATION */
 		super("Main");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -41,12 +41,16 @@ public class WindowMenu extends JFrame{
 		getContentPane().add(panelCenter, BorderLayout.CENTER);
 		
 		//THIS IS FOR ENCRYPTING A FILE!!
-		JButton btnNewButton_1 = new JButton("New button");
+		JButton btnNewButton_1 = new JButton("Encrypt");
 		btnNewButton_1.addActionListener(encryptFile);
 		panelCenter.add(btnNewButton_1);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		panelCenter.add(scrollPane);
+		
+		JButton btnNewButton_2 = new JButton("Decrypt");
+		btnNewButton_2.addActionListener(decryptFile);
+		panelCenter.add(btnNewButton_2);
 		
 		JPanel panelFooter = new JPanel();
 		getContentPane().add(panelFooter, BorderLayout.SOUTH);
