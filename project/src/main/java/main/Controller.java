@@ -175,7 +175,7 @@ public class Controller {
 		if(this.createAccountWindow != null)
 			this.createAccountWindow.setVisible(false);
 		if(this.accountInfoWindow != null)
-			this.createAccountWindow.setVisible(false);
+			this.accountInfoWindow.setVisible(false);
 		if(this.forgotPasswordWindow != null)
 			this.forgotPasswordWindow.setVisible(false);
 		

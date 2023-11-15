@@ -1,20 +1,14 @@
 package serializer;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+
+import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
+
 import storage.AccountInfo;
 import storage.UpdateStorage;
-
-import java.io.File;
-import java.nio.file.*;
-import org.jasypt.encryption.pbe.*;
-import org.jasypt.iv.RandomIvGenerator;
-
-import java.util.ArrayList;
-import java.util.Properties;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 
 /*
  * Files and information is serialized to protect/lock it from being interacted with by outside users or anything else 
@@ -73,9 +67,6 @@ public class Serializer {
 	
 	//bubble exceptions to controller.
 	public static AccountInfo logIn(String username, String password) throws Exception{
-		//TODO: Encrypt the info based on the password
-		
-		
 		//get the accounts. 
 		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
 
@@ -90,8 +81,6 @@ public class Serializer {
 					return acc;	
 			}
 		}
-		
-		
 		return null;
 	}
 	
