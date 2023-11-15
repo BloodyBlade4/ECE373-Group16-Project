@@ -55,9 +55,6 @@ public class Controller {
 	
 	
 	public Controller() {
-
-		
-		
 		System.out.println("Heyo, the program is starting.");
 
 		/*Action listeners*/
@@ -142,7 +139,10 @@ public class Controller {
 				
 				//create new account object
 				AccountInfo newAccount = new AccountInfo(username, password,
-						secQOne, secAOne);
+						secQOne, secAOne,
+						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecATwo().getText(),
+						accountInfoWindow.getTextFieldSecQThree().getText(), accountInfoWindow.getTextFieldSecAThree().getText(),
+						accountInfoWindow.getHomeDir());
 				
 				//write information to storage
 				try {

@@ -26,7 +26,7 @@ import javax.swing.JTextField;
 
 
 
-public class WindowSignIn extends JFrame{
+public class WindowSignIn extends JFrame {
 	/**
 	 * 
 	 */
@@ -68,6 +68,7 @@ public class WindowSignIn extends JFrame{
 		panelField.add(lblNewLabel_1);
 		
 		textFieldUsername = new JTextField();
+		textFieldUsername.setText("hi");
 		panelField.add(textFieldUsername);
 		textFieldUsername.setColumns(10);
 		//END panel field

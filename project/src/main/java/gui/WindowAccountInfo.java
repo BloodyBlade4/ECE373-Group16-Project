@@ -191,6 +191,10 @@ public class WindowAccountInfo extends JFrame{
 	public JTextField getTextFieldSecAThree() {
 		return QThree.textFieldOne;
 	}
+	
+	public String getHomeDir() {
+		return lblHomeDir.getText();
+	}
 }
 
 class PannelField extends JPanel{

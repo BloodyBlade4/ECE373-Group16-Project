@@ -23,6 +23,22 @@ public class AccountInfo {
 		this.secQ1 = secQOne;
 		this.secAns1 = secAnsOne;
 	}
+	
+	public AccountInfo(String name, String password,
+			String secQOne, String secAnsOne,
+			String secQTwo, String secATwo,
+			String secQThree, String secAThree, String homeDir) {
+		this.name = name;
+		this.password = password;
+		this.secQ1 = secQOne;
+		this.secAns1 = secAnsOne;
+		this.secQ2 = secQTwo;
+		this.secAns2 = secATwo;
+		this.secQ3 = secQThree;
+		this.secAns3 = secAThree;
+		this.homeDirectory = homeDir;
+	}
+	
 	/*
 	public String InfoAsString() {
 		return (name+","+password+","+secQ1+","+secAns1);
