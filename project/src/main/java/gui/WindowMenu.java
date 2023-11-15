@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JScrollPane;
 import javax.swing.JButton;
+import java.awt.event.ActionEvent;
 
 public class WindowMenu extends JFrame{
 	
@@ -18,7 +19,7 @@ public class WindowMenu extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 
-	public WindowMenu(ActionListener openAccountInfo) {
+	public WindowMenu(ActionListener openAccountInfo, ActionListener encryptFile) {
 		/* INITIALIZATION */
 		super("Main");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -38,6 +39,11 @@ public class WindowMenu extends JFrame{
 		
 		JPanel panelCenter = new JPanel();
 		getContentPane().add(panelCenter, BorderLayout.CENTER);
+		
+		//THIS IS FOR ENCRYPTING A FILE!!
+		JButton btnNewButton_1 = new JButton("New button");
+		btnNewButton_1.addActionListener(encryptFile);
+		panelCenter.add(btnNewButton_1);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		panelCenter.add(scrollPane);

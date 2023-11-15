@@ -1,8 +1,11 @@
 package main;
 
 import storage.AccountInfo;
+import storage.FileHelper;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.file.Path;
 
 import gui.WindowAccountInfo;
 import gui.WindowCreateAccount;
@@ -47,7 +50,7 @@ public class Controller {
 	
 	private String username = null;
 	private String password = null;
-	
+	private AccountInfo curAccount;
 	
 	public static void main(String[] args) {
 		Controller cont = new Controller();
@@ -108,6 +111,8 @@ public class Controller {
 					System.out.println("Incorrect user information.");
 					return;
 				}
+				curAccount = account;
+				
 				System.out.println("Success!");
 				hideAllWindows();
 				menuWindow.setVisible(true);
@@ -138,15 +143,15 @@ public class Controller {
 				//TODO: Verify the information. formatting, etc.
 				
 				//create new account object
-				AccountInfo newAccount = new AccountInfo(username, password,
+				curAccount = new AccountInfo(username, password,
 						secQOne, secAOne,
 						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecATwo().getText(),
 						accountInfoWindow.getTextFieldSecQThree().getText(), accountInfoWindow.getTextFieldSecAThree().getText(),
 						accountInfoWindow.getHomeDir());
-				
+				System.out.println("Home dir is: " + accountInfoWindow.getHomeDir());
 				//write information to storage
 				try {
-					Serializer.addAccount(newAccount);
+					Serializer.addAccount(curAccount);
 				} catch (Exception e1) {
 					System.out.println(e1);
 				}
@@ -157,6 +162,14 @@ public class Controller {
 			}
 		};
 		
+		ActionListener encryptFile = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Path toEncryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to encrypt", 
+						"Text files?" , "txt");
+				Serializer.encryptFile(toEncryptPath, curAccount.getPassword(), 
+						false /*delete old*/, curAccount.getHomeDirectory());
+			}
+		};
 		
 		signInWindow = 
 				new WindowSignIn(submitSignIn, forgotPasswordStateChange,createAccountStateChange);
@@ -164,7 +177,7 @@ public class Controller {
 		createAccountWindow = new WindowCreateAccount(submitCreateAccount, 
 				signInStateChange, forgotPasswordStateChange);
 		accountInfoWindow = new WindowAccountInfo(submitAccountInfo);
-		menuWindow = new WindowMenu(openAccountInfo);
+		menuWindow = new WindowMenu(openAccountInfo, encryptFile);
 		
 		
 	}

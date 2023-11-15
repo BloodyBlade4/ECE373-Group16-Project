@@ -1,5 +1,7 @@
 package serializer;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -20,16 +22,35 @@ import storage.UpdateStorage;
 public class Serializer {
 	
 	//takes the location of the file to encrypt, and the users password.
-	public void encryptFile(String loc, String password) {
-		encryptFile(Paths.get(loc), password);
+	public void encryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
+		encryptFile(Paths.get(loc), password, deleteOld, homeDir);
 	}
-	public void encryptFile(Path p, String password) {
+	public static void encryptFile(Path p, String password, Boolean deleteOld, String homeDir) {
 		//create encryption object. 
 		StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();
 		encryptor.setPassword(password);
 		
 		
+		byte[] data = null;
+		try {
+			data = Files.readAllBytes(p);
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		//create new file for the serialized information
+		//TODO!!!! Home directory isn't being saved to the userInfo.. 
+		//encryption, however, seems to be working. 
+		String outputFile = homeDir + "/testing.txt";
+		System.out.println("Writing file now with " + encryptor.encrypt(data));
+		System.out.println("writing into " + outputFile);
+		try {
+			Files.write(Paths.get(outputFile), encryptor.encrypt(data));
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 		//read through the old file and encrypt the data into the new file
 			//uses the method encryptor.encrypt(Text). 
