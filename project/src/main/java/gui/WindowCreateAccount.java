@@ -3,13 +3,16 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.BoxLayout;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JPasswordField;
 import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
@@ -20,7 +23,7 @@ public class WindowCreateAccount extends JFrame{
 	 */
 	private static final long serialVersionUID = 1L;
 	private JTextField textFieldUsername;
-	private JTextField textFieldPassword;
+	private JPasswordField textFieldPassword;
 	
 	
 	public WindowCreateAccount(ActionListener submitCreateAccount, 
@@ -67,9 +70,17 @@ public class WindowCreateAccount extends JFrame{
 		JLabel lblNewLabel_1_1 = new JLabel("Password");
 		panelField_1.add(lblNewLabel_1_1);
 		
-		textFieldPassword = new JTextField();
+		textFieldPassword = new JPasswordField();
 		textFieldPassword.setColumns(10);
 		panelField_1.add(textFieldPassword);
+		
+		JCheckBox showPasswordCheckBox = new JCheckBox("Show Password");
+        showPasswordCheckBox.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // Toggle the echo character of the password field
+                textFieldPassword.setEchoChar(showPasswordCheckBox.isSelected() ? 0 : '*');
+            }
+        });
 		
 		/*BUTTONS */
 		JButton btnSubmit = new JButton("Create Account");
@@ -84,6 +95,7 @@ public class WindowCreateAccount extends JFrame{
 		JButton btnForgotPassword = Styling.navigationButton("Forgot Password");
 		btnForgotPassword.addActionListener(forgotPasswordStateChange);
 		panelFooter.add(btnForgotPassword);
+		
 		/* END buttons */
 		
 		
