@@ -34,6 +34,12 @@ public class FileHelper {
 			    title,
 			    JOptionPane.ERROR_MESSAGE);
 	}
+	public static void infoMessage(String title, String message) {
+		JOptionPane.showMessageDialog(null,
+			    "Error: " + message,
+			    title,
+			    JOptionPane.INFORMATION_MESSAGE);
+	}
 	
 	public static Boolean errorTryAgainMessage(String title, String message) {
 		int dialogResult = JOptionPane.showConfirmDialog(null, message, title, JOptionPane.YES_NO_OPTION);
