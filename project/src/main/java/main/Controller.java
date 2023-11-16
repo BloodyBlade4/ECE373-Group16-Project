@@ -17,6 +17,7 @@ import serializer.Serializer;
 
 /*
  * TODO:
+ * **** DON'T encrypt the security questions, just the answers. 
  * 1. Set up the account info window. This needs to be able to update user information, but NOT PASSWORD. currently, user password is used in encryption.
  * 2. Set up required formatting for different fields, and could use JPasswordField for password security. 
  * 3. Figure out file storage. Ideas:
@@ -126,7 +127,34 @@ public class Controller {
 		
 		ActionListener submitForgotPassword = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//TODO: Formatting, again. 
 				
+				//TODO: Account username is needed too!!!!... right? 
+				String username = "";
+				
+				//TODO: Get the security question answers from user. 
+				String ansOne = "";
+				String ansTwo = "";
+				String ansThree ="";
+				String pass = ansOne + ansTwo + ansThree;
+				
+				//decrypt the security code using answers as one long string. 
+				AccountInfo acc = null;
+				try {
+					acc = Serializer.forgotPassword(username, pass);
+				} catch (Exception e1) {
+					// TODO ERROR inside forgot password. 
+					e1.printStackTrace();
+				}
+				if (acc == null) {
+					//TODO: Prompt the user that the info was incorrect. 
+				}
+				//TODO: Do we as the user to change passwords?
+				
+				
+				curAccount = acc;
+				hideAllWindows();
+				menuWindow.setVisible(true);
 			}
 		};
 		
@@ -134,13 +162,19 @@ public class Controller {
 		ActionListener submitAccountInfo = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {		
 				//TODO: Verify the information. formatting, etc.
-				
+				String secCode = null;
+				try {
+					secCode = Serializer.generateAccoutSerializerString();
+				} catch (Exception e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				//create new account object
 				curAccount = new AccountInfo(username, password,
 						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecAOne().getText(),
 						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecATwo().getText(),
 						accountInfoWindow.getTextFieldSecQThree().getText(), accountInfoWindow.getTextFieldSecAThree().getText(),
-						accountInfoWindow.getHomeDir());
+						accountInfoWindow.getHomeDir(), secCode, secCode);
 
 				//write information to storage
 				try {
@@ -162,7 +196,7 @@ public class Controller {
 						"Text files?" , "txt");
 				if (toEncryptPath == null)
 					return;
-				Serializer.encryptFile(toEncryptPath, curAccount.getPassword(), 
+				Serializer.encryptFile(toEncryptPath, curAccount.getSecCodePass(), 
 						false /*delete old*/, curAccount.getHomeDirectory());
 			}
 		};
@@ -172,7 +206,7 @@ public class Controller {
 						"Text files?" , "txt");
 				if (toDecryptPath == null)
 					return;
-				Serializer.decryptFile(toDecryptPath, curAccount.getPassword(), 
+				Serializer.decryptFile(toDecryptPath, curAccount.getSecCodePass(), 
 						false /*delete old*/, curAccount.getHomeDirectory());
 			}
 		};

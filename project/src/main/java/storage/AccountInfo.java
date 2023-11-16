@@ -8,7 +8,8 @@ public class AccountInfo {
 	private String homeDirectory = "";
 	
 	//Desired level of security???
-	
+	private String secCodePass = "";
+	private String secCodeAns = "";
 	
 	//security questions
 	private String secQ1 = "", secQ2 = "", secQ3 = "";
@@ -19,7 +20,8 @@ public class AccountInfo {
 	public AccountInfo(String name, String password,
 			String secQOne, String secAnsOne,
 			String secQTwo, String secATwo,
-			String secQThree, String secAThree, String homeDir) {
+			String secQThree, String secAThree, String homeDir,
+			String securityCodePass, String securityCodeAns) {
 		this.name = name;
 		this.password = password;
 		this.secQ1 = secQOne;
@@ -29,6 +31,8 @@ public class AccountInfo {
 		this.secQ3 = secQThree;
 		this.secAns3 = secAThree;
 		this.homeDirectory = homeDir;
+		this.secCodePass = securityCodePass;
+		this.secCodeAns = securityCodeAns;
 	}
 	
 	/*
@@ -47,6 +51,9 @@ public class AccountInfo {
 				"\nsecQ3: " + this.secQ3 +
 				"\nsecA3: " + this.secAns3 +
 				"\nHome Directory: " + this.homeDirectory);
+	}
+	public String allSecurityAnswers() {
+		return this.secAns1 + this.secAns2 + this.secAns3;
 	}
 
 	public String getName() {
@@ -119,6 +126,22 @@ public class AccountInfo {
 
 	public void setSecAns3(String secAns3) {
 		this.secAns3 = secAns3;
+	}
+
+	public String getSecCodePass() {
+		return secCodePass;
+	}
+
+	public void setSecCodePass(String secCodePass) {
+		this.secCodePass = secCodePass;
+	}
+
+	public String getSecCodeAns() {
+		return secCodeAns;
+	}
+
+	public void setSecCodeAns(String secCodeAns) {
+		this.secCodeAns = secCodeAns;
 	}
 	
 }
