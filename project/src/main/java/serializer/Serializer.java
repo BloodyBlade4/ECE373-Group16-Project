@@ -27,6 +27,7 @@ import storage.UpdateStorage;
 
 public class Serializer {
 	//Generates the serialized string the account uses for PBE. 
+	//This is then serialized by both user password and the user security questions for account retrieval. 
 	public static String generateAccoutSerializerString() throws Exception {
 		int n = 30;
 		byte[] array = new byte[256]; // length is bounded by 7
@@ -82,6 +83,7 @@ public class Serializer {
 		return null;
 	}
 	
+	//check if the account exists based off a user name. 
 	public static ArrayList<String> accountExistsGetQuestions(String username) throws Exception {
 		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
 		ArrayList<String> questions = new ArrayList<String>();
@@ -100,6 +102,7 @@ public class Serializer {
 		return null;
 	}
 	
+	//uses the security questions to access acount information. 
 	public static AccountInfo forgotPassword(String userName, String secAnswers) throws Exception{
 		//search through accounts till you find the right one. 
 		//get the accounts. 
@@ -131,7 +134,22 @@ public class Serializer {
 		return null;
 	}
 	
-	
+	//updates a user account based on username. Verification does in controller.
+	public static void changeAccountInfo(String username, AccountInfo acc) throws Exception {
+		
+		
+		//get accounts list:
+		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
+		
+		//find the account
+		for (AccountInfo a : accounts) {
+			if (a.getName().equals(username)) {
+				accounts.set(accounts.indexOf(a), encryptAccountInfo(acc));
+				break;
+			}
+		}
+		UpdateStorage.writeAccount(accounts);
+	}
 	
 	/* File Handling */
 	//takes the location of the file to encrypt, and the users password.
@@ -238,7 +256,6 @@ public class Serializer {
 	private static AccountInfo decryptAccountInfo(AccountInfo account, String password) throws Exception {
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password
-		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");// optionally set the algorithm
 		
 		AccountInfo acc = new AccountInfo(
 				account.getName(),
@@ -263,16 +280,12 @@ public class Serializer {
 	private static String encryptString(String toEncrypt, String password) {
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password
-		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");   // optionally set the algorithm
-		// what's this for? encryptor.setIvGenerator(new RandomIvGenerator());
 		
 		return encryptor.encrypt(toEncrypt);
 	}
 	private static String decryptString(String toDecrypt, String password) {
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password
-		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");   // optionally set the algorithm
-		// what's this for? encryptor.setIvGenerator(new RandomIvGenerator());
 		
 		return encryptor.decrypt(toDecrypt);
 	}

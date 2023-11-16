@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.nio.file.Path;
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import gui.WindowAccountInfo;
@@ -18,7 +19,11 @@ import gui.WindowSignIn;
 import serializer.Serializer;
 
 
-/*
+/*	Program notes:
+ * - descriptions are often left to the names of function, as comments inside show execution and the name is descriptive enough. 
+ * 
+ * 
+ * 
  * TODO:
  * 1. Set up the account info window. This needs to be able to update user information, but NOT PASSWORD. currently, user password is used in encryption.
  * 2. Set up required formatting for different fields, and could use JPasswordField for password security. 
@@ -40,6 +45,7 @@ public class Controller {
 	private WindowAccountInfo accountInfoWindow;
 	private WindowForgotPassword forgotPasswordWindow;
 	private WindowMenu menuWindow;
+	private WindowAccountInfo securityPreferencesWindow;
 	
 	private String username = null;
 	private String password = null;
@@ -53,7 +59,7 @@ public class Controller {
 	public Controller() {
 		System.out.println("Heyo, the program is starting.");
 
-		/*Action listeners*/
+		/*Action listeners for simple page changes*/
 		ActionListener forgotPasswordStateChange = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Prompt user for username. 
@@ -102,14 +108,10 @@ public class Controller {
 				signInWindow.setVisible(true);
 			}
 		};
-		ActionListener openAccountInfo = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				accountInfoWindow.setVisible(true);
-			}
-		};
+
 		
 		
-		
+		//Get the user information from textfields, search for that user in the database.
 		ActionListener submitSignIn = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username = signInWindow.getTextFieldUsername().getText();
@@ -137,19 +139,59 @@ public class Controller {
 				menuWindow.setVisible(true);
 			}
 		};
+		
+		//submits username and password for a new account, passing onto the accountinfo window.
 		ActionListener submitCreateAccount = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				username = createAccountWindow.getTextFieldUsername().getText();
 				password = createAccountWindow.getTextFieldPassword().getText();
 				
 				//TODO: Verify the information. formatting, etc. 
+				if (!FileHelper.passwordValid(password))
+					return;
 				
 				//change state to submitAccountInfo. 
 				hideAllWindows();
 				accountInfoWindow.setVisible(true);
 			}
 		};
+		//Gets the final questions needed for a new account, then adds the user to the database. 
+		ActionListener submitAccountInfo = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {		
+				//TODO: Verify the information. formatting, etc.
+				
+				
+				String secCode = null;
+				try {
+					secCode = Serializer.generateAccoutSerializerString();
+				} catch (Exception e1) {
+					FileHelper.errorMessage("Error", "There has been an issue with serialization.\n" +
+							"Our appologies, this fault is on our end. \n" +
+							"Please try again. " + e1);
+					e1.printStackTrace();
+				}
+				//create new account object
+				curAccount = new AccountInfo(username, password,
+						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecAOne().getText(),
+						accountInfoWindow.getTextFieldSecQTwo().getText(), accountInfoWindow.getTextFieldSecATwo().getText(),
+						accountInfoWindow.getTextFieldSecQThree().getText(), accountInfoWindow.getTextFieldSecAThree().getText(),
+						accountInfoWindow.getHomeDir(), secCode, secCode);
+
+				//write information to storage
+				try {
+					Serializer.addAccount(curAccount);
+				} catch (Exception e1) {
+					FileHelper.errorMessage("Error", "Not able to add your account. Please try again. \n " + e1);
+					e1.printStackTrace();
+					return;
+				}
+				
+				hideAllWindows();
+				menuWindow.setVisible(true);
+			}
+		};
 		
+		//grabs the info from the gui and checks the database for the correct user, and checks that the information is correct. 
 		ActionListener submitForgotPassword = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: Formatting, again. 
@@ -184,42 +226,6 @@ public class Controller {
 			}
 		};
 		
-		
-		ActionListener submitAccountInfo = new ActionListener() {
-			public void actionPerformed(ActionEvent e) {		
-				//TODO: Verify the information. formatting, etc.
-				
-				
-				String secCode = null;
-				try {
-					secCode = Serializer.generateAccoutSerializerString();
-				} catch (Exception e1) {
-					FileHelper.errorMessage("Error", "There has been an issue with serialization.\n" +
-							"Our appologies, this fault is on our end. \n" +
-							"Please try again. " + e1);
-					e1.printStackTrace();
-				}
-				//create new account object
-				curAccount = new AccountInfo(username, password,
-						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecAOne().getText(),
-						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecATwo().getText(),
-						accountInfoWindow.getTextFieldSecQThree().getText(), accountInfoWindow.getTextFieldSecAThree().getText(),
-						accountInfoWindow.getHomeDir(), secCode, secCode);
-
-				//write information to storage
-				try {
-					Serializer.addAccount(curAccount);
-				} catch (Exception e1) {
-					FileHelper.errorMessage("Error", "Not able to add your account. Please try again. \n " + e1);
-					e1.printStackTrace();
-					return;
-				}
-				
-				hideAllWindows();
-				menuWindow.setVisible(true);
-			}
-		};
-		
 		ActionListener encryptFile = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Path toEncryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to encrypt", 
@@ -243,6 +249,72 @@ public class Controller {
 		
 		
 		
+		ActionListener openSecurityPreferences = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//set fields accordingly. 
+				securityPreferencesWindow.setTextFieldSecQOne(curAccount.getSecQ1());
+				securityPreferencesWindow.setTextFieldSecAOne(curAccount.getSecAns1());
+				
+				securityPreferencesWindow.setTextFieldSecQTwo(curAccount.getSecQ2());
+				securityPreferencesWindow.setTextFieldSecATwo(curAccount.getSecAns2());
+				
+				securityPreferencesWindow.setTextFieldSecQThree(curAccount.getSecQ3());
+				securityPreferencesWindow.setTextFieldSecAThree(curAccount.getSecAns3());
+				
+				securityPreferencesWindow.setHomeDir(curAccount.getHomeDirectory());
+				
+				//Open window to change information. 
+				securityPreferencesWindow.setVisible(true);
+				securityPreferencesWindow.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+				
+			}
+		};
+		ActionListener submitUpdateAccountInfo = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//TODO: verify password
+				
+				//TODO: formatting checks?
+				
+				//grab information
+				curAccount = new AccountInfo(curAccount.getName(), curAccount.getPassword(),
+						securityPreferencesWindow.getTextFieldSecQOne().getText(), securityPreferencesWindow.getTextFieldSecAOne().getText(),
+						securityPreferencesWindow.getTextFieldSecQTwo().getText(), securityPreferencesWindow.getTextFieldSecATwo().getText(),
+						securityPreferencesWindow.getTextFieldSecQThree().getText(), securityPreferencesWindow.getTextFieldSecAThree().getText(),
+						securityPreferencesWindow.getHomeDir(), curAccount.getSecCodePass(), curAccount.getSecCodeAns());
+				
+				try {
+					Serializer.changeAccountInfo(curAccount.getName(), curAccount);
+				} catch (Exception e1) {
+					FileHelper.errorMessage("Error", "An error has occured while updating your account information. Please try again." + e1);
+					e1.printStackTrace();
+					return;
+				}
+				securityPreferencesWindow.setVisible(false);
+			}
+		};
+		
+		ActionListener resetPassword = new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//verify password
+				String oldPass = null;
+				oldPass = JOptionPane.showInputDialog("Please enter current password.");
+				
+				//allow user to enter in new password. 
+				String newPass = null;
+				newPass = JOptionPane.showInputDialog("Please enter new password.");
+				
+				curAccount.setPassword(newPass);
+				
+				try {
+					Serializer.changeAccountInfo(curAccount.getName(), curAccount);
+				} catch (Exception e1) {
+					FileHelper.errorMessage("Error", "An error has occured while updating your password. Please try again." + e1);
+					e1.printStackTrace();
+				}
+			}
+		};
+
+		
 		/* Windows */
 		signInWindow = 
 				new WindowSignIn(submitSignIn, forgotPasswordStateChange,createAccountStateChange);
@@ -251,7 +323,8 @@ public class Controller {
 		createAccountWindow = new WindowCreateAccount(submitCreateAccount, 
 				signInStateChange, forgotPasswordStateChange);
 		accountInfoWindow = new WindowAccountInfo(submitAccountInfo);
-		menuWindow = new WindowMenu(openAccountInfo, encryptFile, decryptFile);
+		menuWindow = new WindowMenu(openSecurityPreferences, resetPassword, encryptFile, decryptFile);
+		securityPreferencesWindow = new WindowAccountInfo(submitUpdateAccountInfo);
 		
 		
 	}
@@ -265,6 +338,7 @@ public class Controller {
 			this.accountInfoWindow.setVisible(false);
 		if(this.forgotPasswordWindow != null)
 			this.forgotPasswordWindow.setVisible(false);
-		
+		if(this.securityPreferencesWindow != null)
+			this.securityPreferencesWindow.setVisible(false);
 	}
 }

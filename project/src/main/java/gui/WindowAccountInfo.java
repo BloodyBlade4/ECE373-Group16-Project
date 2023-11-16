@@ -60,38 +60,7 @@ public class WindowAccountInfo extends JFrame{
 		sl_panelCenter.putConstraint(SpringLayout.EAST, separator, 400, SpringLayout.WEST, panelCenter);
 		panelCenter.add(separator);
 		
-		/* Start Panel 
-		JPanel panelFields = new JPanel();
-		panelCenter.add(panelFields);
-		panelFields.setLayout(new BoxLayout(panelFields, BoxLayout.Y_AXIS));
-		
-		JLabel lblNewLabel = new JLabel("Security question 1:");
-		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panelFields.add(lblNewLabel);
-		
-		JPanel panelField = new JPanel();
-		panelField.setMaximumSize(new Dimension(200, 30));
-		panelFields.add(panelField);
-		
-		JLabel lblNewLabel_1 = new JLabel("Question");
-		panelField.add(lblNewLabel_1);
-		
-		textFieldSecQOne = new JTextField();
-		textFieldSecQOne.setColumns(10);
-		panelField.add(textFieldSecQOne);
 
-		
-		JPanel panelField_1 = new JPanel();
-		panelField_1.setMaximumSize(new Dimension(200, 30));
-		panelFields.add(panelField_1);
-		
-		JLabel lblNewLabel_1_2_3 = new JLabel("Answer");
-		panelField_1.add(lblNewLabel_1_2_3);
-		
-		textFieldSecAOne = new JTextField();
-		textFieldSecAOne.setColumns(10);
-		panelField_1.add(textFieldSecAOne);
-		End Panel */
 		
 		QOne = new PannelField("Security Question 1", "", "");
 		sl_panelCenter.putConstraint(SpringLayout.NORTH, QOne, 0, SpringLayout.SOUTH, separator);
@@ -204,75 +173,9 @@ public class WindowAccountInfo extends JFrame{
 				.addComponent(panelCenter, GroupLayout.PREFERRED_SIZE, 422, GroupLayout.PREFERRED_SIZE)
 		);
 		getContentPane().setLayout(groupLayout);
-		
-		/*super("Create Account");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(300, 400);
-		this.setLocationRelativeTo(null); //Center of screen.
-		getContentPane().setLayout(new BorderLayout(0, 0));
-		
-		JPanel panelFooter = new JPanel();
-		getContentPane().add(panelFooter, BorderLayout.SOUTH);
-		
-		JPanel panelCenter = new JPanel();
-		getContentPane().add(panelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new BoxLayout(panelCenter, BoxLayout.Y_AXIS));
-		
-		JSeparator separator = new JSeparator();
-		panelCenter.add(separator);
-		
-		QOne = new PannelField("Security question 1:", "Question", "Answer");
-		panelCenter.add(QOne);
-		QTwo = new PannelField("Security question 2:", "Question", "Answer");
-		panelCenter.add(QTwo);
-		QThree = new PannelField("Security question 3:", "Question", "Answer");
-		panelCenter.add(QThree);
-		
-		
-		JButton btnSubmit = new JButton("Submit");
-		btnSubmit.addActionListener(submitAccountInfo);
-		
-		JPanel panelHomeDirectory = new JPanel();
-		panelCenter.add(panelHomeDirectory);
-		panelHomeDirectory.setLayout(new BoxLayout(panelHomeDirectory, BoxLayout.Y_AXIS));
-		
-		JPanel panel = new JPanel();
-		panelHomeDirectory.add(panel);
-		
-		JLabel lblNewLabel_2 = new JLabel("Home Directory:");
-		panel.add(lblNewLabel_2);
-		
-		JButton btnNewButton = new JButton("Search");
-		
-		panel.add(btnNewButton);
-		
-		JPanel panel_1 = new JPanel();
-		panelHomeDirectory.add(panel_1);
-		
-		lblHomeDir = new JLabel("No directory selected.");
-		panel_1.add(lblHomeDir);
-		btnSubmit.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panelCenter.add(btnSubmit);
-		
-		btnNewButton.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent e) {
-				try {
-					String p = selectDirectory();
-					if (p==null)
-						return;
-					lblHomeDir.setText(p);
-				} catch (Exception e1) {
-					System.out.println("error selecting directory!");
-					e1.printStackTrace();
-				}
-			}
-		});
-		
-		JSeparator separator_1 = new JSeparator();
-		panelCenter.add(separator_1);
-		*/
 	}
 	
+	//Prompts the user to select a directory for their home directory. 
 	private static String selectDirectory() {
 		File directory = new File(System.getProperty("user.dir"));
 		JFileChooser chooser = new JFileChooser(directory) {
@@ -304,32 +207,54 @@ public class WindowAccountInfo extends JFrame{
 	public JTextField getTextFieldSecQOne() {
 		return QOne.textFieldOne;
 	}
+	public void setTextFieldSecQOne(String text) {
+		QOne.textFieldOne.setText(text);
+	}
 
 	public JTextField getTextFieldSecAOne() {
 		return QOne.textFieldTwo;
+	}
+	public void setTextFieldSecAOne(String text) {
+		QOne.textFieldTwo.setText(text);;
 	}
 
 	public JTextField getTextFieldSecQTwo() {
 		return QTwo.textFieldOne;
 	}
+	public void setTextFieldSecQTwo(String text) {
+		QTwo.textFieldOne.setText(text);
+	}
 
 	public JTextField getTextFieldSecATwo() {
 		return QTwo.textFieldTwo;
+	}
+	public void setTextFieldSecATwo(String text) {
+		QTwo.textFieldTwo.setText(text);
 	}
 
 	public JTextField getTextFieldSecQThree() {
 		return QThree.textFieldOne;
 	}
+	public void setTextFieldSecQThree(String text) {
+		QThree.textFieldOne.setText(text);
+	}
 
 	public JTextField getTextFieldSecAThree() {
 		return QThree.textFieldTwo;
+	}
+	public void setTextFieldSecAThree(String text) {
+		QThree.textFieldTwo.setText(text);
 	}
 	
 	public String getHomeDir() {
 		return lblHomeDir.getText();
 	}
+	public void setHomeDir(String text) {
+		lblHomeDir.setText(text);
+	}
 }
 
+//A work in progress for GUI implementation. 
 class PannelField extends JPanel{
 	public JTextField textFieldOne, textFieldTwo;
 	

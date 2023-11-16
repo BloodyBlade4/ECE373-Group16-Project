@@ -8,6 +8,7 @@ import javax.swing.JOptionPane;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class FileHelper {
+	//file selecter gui
 	public static Path selectFile(String openingDirectory, String title, String extDetail, String extName) {
 		File directory = (openingDirectory==null)? new File(System.getProperty("user.dir"))
 												: new File(openingDirectory);
@@ -51,16 +52,17 @@ public class FileHelper {
 		//check for a mix of uppercase, lowercase, digits, and special characters
 		boolean validCheck = false;
 		if (password.length () >= 8) {
-			if (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$") == true) {
+			validCheck = true;
+			/*For part 2. Password security?
+			 * if (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$") == true) {
 				validCheck = true;
-				JOptionPane.showMessageDialog(null, "Password is valid!");
 			}
 			else {
-				JOptionPane.showInputDialog(null, "Password must have a mix of uppercase, lowercase, digits, and special characters", JOptionPane.ERROR_MESSAGE);
-			}
+				infoMessage("Info", "Password must have a mix of uppercase, lowercase, digits, and special characters");
+			}*/
 		}
 		else {
-			JOptionPane.showInputDialog(null, "Password must be at least 8 characters long", JOptionPane.ERROR_MESSAGE);
+			infoMessage("Info", "Password must be at least 8 characters long");
 		}
 		
 		return validCheck;

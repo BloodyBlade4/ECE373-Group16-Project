@@ -19,13 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 
 /*
- * THIS IS A DEFAULT CONSTRUCTION FOR FIELDS HERE. 
- * Modify accordingly. Things to consider for modification
- * 1. duplicate "panelField" JPanel for as many fields as you need. they already organize them selves. You just need to name and set controls
- * 2. Set the two bottom buttons according to what you want to happen. 
- *  
+ * Default sign in screen. 
  * 
- * Optional:
  * 	Could use the JPasswordField instead of JTextField for password. 
  */
 

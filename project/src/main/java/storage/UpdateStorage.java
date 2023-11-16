@@ -21,8 +21,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
  */
 
 public class UpdateStorage {
-	
-	//bubble any exceptions back to serializer. 
+	//writes an ecrypted accountInfo object to storage. 
 	public static void writeAccount(AccountInfo encryptedAccount) throws Exception {
 		//Get file
 		Path p;
@@ -49,7 +48,31 @@ public class UpdateStorage {
 			throw new Exception("Error writing to the file. " + e);
 		}		
 	}
+	//writes an ecrypted accountInfo LIST to storage. 
+		public static void writeAccount(ArrayList<AccountInfo> encryptedList) throws Exception {
+			//Get file
+			Path p;
+			try {
+				p = findPropertiesFile();
+			} catch (Exception e) {
+				//TODO: Warn the user there is an issue finding the properties file.. 
+				//This could be due to different platforms such as mac/linux. Addapt for these.
+				e.printStackTrace();
+				throw new Exception("Error finding or creating file! " + e);
+			}
+			ObjectMapper mapper = new XmlMapper();
+			mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+			
+			//rewrite the file with the new account added.
+			try {
+				mapper.writeValue(Files.newOutputStream(p), encryptedList);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new Exception("Error writing to the file. " + e);
+			}		
+		}
 	
+	//retrieves all the accountInfo's stored in storage. 
 	public static ArrayList<AccountInfo> readAccountStorage(Path p) throws Exception{
 		if (p.toFile().length() == 0)
 			return new ArrayList<AccountInfo>();
@@ -82,6 +105,7 @@ public class UpdateStorage {
 		}
 	}
 	
+	//retrieves the account info storage file. 
 	public static Path findPropertiesFile() throws Exception{
 		String DATA_DIR = System.getenv("APPDATA") + "\\LockBox";
 		String DATA_FILE = "/AccountStorage.xml";
