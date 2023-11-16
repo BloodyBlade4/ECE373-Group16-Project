@@ -10,7 +10,6 @@ import java.util.Random;
 
 import org.jasypt.encryption.pbe.StandardPBEByteEncryptor;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
-import org.jasypt.encryption.StringEncryptor;
 
 import storage.AccountInfo;
 import storage.FileHelper;
@@ -35,7 +34,7 @@ public class Serializer {
 	    String randomString 
 	    = new String(array, Charset.forName("UTF-8")); 
 	    
-	 // Create a StringBuffer to store the result 
+	    // Create a StringBuffer to store the result 
 	    StringBuffer r = new StringBuffer(); 
 	   
 	    // Append first 20 alphanumeric characters 
@@ -70,13 +69,13 @@ public class Serializer {
 		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
 		
 		//See if the accounts list contains the username. 
-		System.out.println("accounts is: " + accounts.toString());
 		for (AccountInfo acc : accounts) {
 			
 			//account found
-			if (decryptString(acc.getName(), password).equals(username)) {
-				if (decryptString(acc.getSecCodePass(), password).equals(password)) {
-					return decryptAccountInfo(acc, password);	
+			if (acc.getName().equals(username)) {
+				String secCode = decryptString(acc.getSecCodePass(), password);
+				if (decryptString(acc.getPassword(), secCode).equals(password)) {
+					return decryptAccountInfo(acc, secCode);	
 				}
 			}
 		}
@@ -89,17 +88,16 @@ public class Serializer {
 		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
 		
 		//See if the accounts list contains the username. 
-		System.out.println("accounts is: " + accounts.toString());
 		for (AccountInfo acc : accounts) {
 			
 			//get security code
 			String secCode = decryptString(acc.getSecCodeAns(), secAnswers);
 			//compare usernames. 
-			if (decryptString(acc.getName(), secCode).equals(userName)) {
+			if (acc.getName().equals(userName)) {
 				//compare security questions. 
-				if (secAnswers.contains(decryptString(acc.getSecQ1(), secCode)) && 
-						secAnswers.contains(decryptString(acc.getSecQ1(), secCode)) &&
-						secAnswers.contains(decryptString(acc.getSecQ1(), secCode)))
+				if (secAnswers.contains(decryptString(acc.getSecAns1(), secCode)) && 
+						secAnswers.contains(decryptString(acc.getSecAns2(), secCode)) &&
+						secAnswers.contains(decryptString(acc.getSecAns3(), secCode)))
 					return decryptAccountInfo(acc, secCode);
 			}
 		}
@@ -196,13 +194,13 @@ public class Serializer {
 		encryptor.setPassword(password);                         // we HAVE TO set a password
 		
 		return new AccountInfo(
-				encryptor.encrypt(account.getName()),
+				account.getName(),
 				encryptor.encrypt(account.getPassword()),
-				encryptor.encrypt(account.getSecQ1()),
+				account.getSecQ1(),
 				encryptor.encrypt(account.getSecAns1()),
-				encryptor.encrypt(account.getSecQ2()),
+				account.getSecQ2(),
 				encryptor.encrypt(account.getSecAns2()),
-				encryptor.encrypt(account.getSecQ3()),
+				account.getSecQ3(),
 				encryptor.encrypt(account.getSecAns3()),
 				encryptor.encrypt(account.getHomeDirectory()),
 				encryptString(account.getSecCodePass(), account.getPassword()),
@@ -216,19 +214,19 @@ public class Serializer {
 		//encryptor.setAlgorithm("PBEWithHMACSHA512AndAES_256");// optionally set the algorithm
 		
 		AccountInfo acc = new AccountInfo(
-				encryptor.decrypt(account.getName()),
+				account.getName(),
 				encryptor.decrypt(account.getPassword()),
-				encryptor.decrypt(account.getSecQ1()),
+				account.getSecQ1(),
 				encryptor.decrypt(account.getSecAns1()),
-				encryptor.decrypt(account.getSecQ2()),
+				account.getSecQ2(),
 				encryptor.decrypt(account.getSecAns2()),
-				encryptor.decrypt(account.getSecQ3()),
+				account.getSecQ3(),
 				encryptor.decrypt(account.getSecAns3()),
 				encryptor.decrypt(account.getHomeDirectory()),
 				"",""
 				);
-		acc.setSecCodePass(decryptString(account.getSecCodePass(), account.getPassword()));
-		acc.setSecCodeAns(decryptString(account.getSecCodeAns(), account.allSecurityAnswers()));
+		acc.setSecCodePass(decryptString(account.getSecCodePass(), acc.getPassword()));
+		acc.setSecCodeAns(decryptString(account.getSecCodeAns(), acc.allSecurityAnswers()));
 		return acc;
 	}
 	

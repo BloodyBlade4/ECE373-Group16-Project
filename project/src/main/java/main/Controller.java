@@ -18,6 +18,7 @@ import serializer.Serializer;
 /*
  * TODO:
  * **** DON'T encrypt the security questions, just the answers. 
+ * **** ensure the account name is available. 
  * 1. Set up the account info window. This needs to be able to update user information, but NOT PASSWORD. currently, user password is used in encryption.
  * 2. Set up required formatting for different fields, and could use JPasswordField for password security. 
  * 3. Figure out file storage. Ideas:

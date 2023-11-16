@@ -169,7 +169,7 @@ public class WindowAccountInfo extends JFrame{
 	}
 	
 	public JTextField getTextFieldSecQOne() {
-		return QOne.textFieldTwo;
+		return QOne.textFieldOne;
 	}
 
 	public JTextField getTextFieldSecAOne() {
@@ -177,19 +177,19 @@ public class WindowAccountInfo extends JFrame{
 	}
 
 	public JTextField getTextFieldSecQTwo() {
-		return QTwo.textFieldTwo;
-	}
-
-	public JTextField getTextFieldSecATwo() {
 		return QTwo.textFieldOne;
 	}
 
+	public JTextField getTextFieldSecATwo() {
+		return QTwo.textFieldTwo;
+	}
+
 	public JTextField getTextFieldSecQThree() {
-		return QThree.textFieldTwo;
+		return QThree.textFieldOne;
 	}
 
 	public JTextField getTextFieldSecAThree() {
-		return QThree.textFieldOne;
+		return QThree.textFieldTwo;
 	}
 	
 	public String getHomeDir() {
