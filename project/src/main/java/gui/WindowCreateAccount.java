@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.JPasswordField;
 import javax.swing.JCheckBox;
+import java.awt.FlowLayout;
 
 public class WindowCreateAccount extends JFrame{
 	
@@ -93,6 +94,7 @@ public class WindowCreateAccount extends JFrame{
 		JPanel panelField_1 = new JPanel();
 		panelField_1.setMaximumSize(new Dimension(200, 30));
 		panelFields.add(panelField_1);
+		panelField_1.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		textFieldPassword = new JPasswordField();
 		textFieldPassword.setForeground(Color.GRAY);
@@ -101,13 +103,15 @@ public class WindowCreateAccount extends JFrame{
 		textFieldPassword.setColumns(10);
 		panelField_1.add(textFieldPassword);
 		
-		showPasswordCheckBox = new JCheckBox("Show Password");
+		showPasswordCheckBox = new JCheckBox("");
         showPasswordCheckBox.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // Toggle the echo character of the password field
                 textFieldPassword.setEchoChar(showPasswordCheckBox.isSelected() ? 0 : '*');
             }
         });
+        showPasswordCheckBox.setSize(10, 10);
+        panelField_1.add(showPasswordCheckBox);
 		
 		/*BUTTONS */
 		JButton btnSubmit = new JButton("Create Account");
