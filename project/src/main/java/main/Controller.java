@@ -6,6 +6,9 @@ import storage.FileHelper;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.nio.file.Path;
+import java.util.ArrayList;
+
+import javax.swing.JOptionPane;
 
 import gui.WindowAccountInfo;
 import gui.WindowCreateAccount;
@@ -17,22 +20,15 @@ import serializer.Serializer;
 
 /*
  * TODO:
- * **** DON'T encrypt the security questions, just the answers. 
- * **** ensure the account name is available. 
  * 1. Set up the account info window. This needs to be able to update user information, but NOT PASSWORD. currently, user password is used in encryption.
  * 2. Set up required formatting for different fields, and could use JPasswordField for password security. 
- * 3. Figure out file storage. Ideas:
- * 		-  The user will have selected a home directory to store encrypted files in
- * 		- Using the file navigation in Swing is fairly easy. Users can select files like this. 
- * 		- prompt users if they want to delete the file after encryption/decryption. 
- * 4. ForgotPassword window!
- * 6. implement the file storage gui
  * 
  * 
  * Future steps:
- * - follow exceptions through and ensure their keeping.
+ * - continue to follow exceptions through and ensure their keeping.
  * - clean up gui using the styling file.
  * - clean coding using helper funcitons. 
+ * - implement the file storage gui
  */
 
 public class Controller {
@@ -60,6 +56,36 @@ public class Controller {
 		/*Action listeners*/
 		ActionListener forgotPasswordStateChange = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				//Prompt user for username. 
+				String name = null;
+				name = JOptionPane.showInputDialog("Please enter username.");
+				
+				//if username isn't null, open forgot password. 
+				if (name == null) {
+					return;
+				}
+				if (name.isBlank()) {
+					FileHelper.infoMessage("Info", "Please enter a valid username.");
+					return;
+				}
+				
+				username = name;
+				ArrayList<String> questions = null;
+				try {
+					questions = Serializer.accountExistsGetQuestions(name);
+				} catch (Exception e1) {
+					FileHelper.infoMessage("Info", "Account not found. This could be due to incorrect username or corrupted data.");
+					e1.printStackTrace();
+					return;
+				}
+				if (questions == null || questions.isEmpty()) {
+					System.out.println("Questions weren't found!");
+					FileHelper.infoMessage("Info", "Account not found. This could be due to incorrect username or corrupted data.");
+					return;
+				}
+				
+				forgotPasswordWindow.setAllQuestions(questions);
+				
 				hideAllWindows();
 				forgotPasswordWindow.setVisible(true);
 			}
@@ -101,8 +127,8 @@ public class Controller {
 				
 				//change state or warn user. 
 				if (account == null) {
-					//TODO: Prompt the user that the information is incorrect.
-					System.out.println("Incorrect user information.");
+					//Prompt the user that the information is incorrect.
+					FileHelper.infoMessage("Info", "Account information is incorrect.");
 					return;
 				}
 				curAccount = account;
@@ -113,10 +139,8 @@ public class Controller {
 		};
 		ActionListener submitCreateAccount = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("submit create Account button hit.");
 				username = createAccountWindow.getTextFieldUsername().getText();
 				password = createAccountWindow.getTextFieldPassword().getText();
-				System.out.println("The username and password are: " + username + ", " + password);
 				
 				//TODO: Verify the information. formatting, etc. 
 				
@@ -130,13 +154,10 @@ public class Controller {
 			public void actionPerformed(ActionEvent e) {
 				//TODO: Formatting, again. 
 				
-				//TODO: Account username is needed too!!!!... right? 
-				String username = "";
-				
-				//TODO: Get the security question answers from user. 
-				String ansOne = "";
-				String ansTwo = "";
-				String ansThree ="";
+				//Get the security question answers from user. 
+				String ansOne = forgotPasswordWindow.getAns1();
+				String ansTwo = forgotPasswordWindow.getAns2();
+				String ansThree = forgotPasswordWindow.getAns3();
 				String pass = ansOne + ansTwo + ansThree;
 				
 				//decrypt the security code using answers as one long string. 
@@ -145,12 +166,16 @@ public class Controller {
 					acc = Serializer.forgotPassword(username, pass);
 				} catch (Exception e1) {
 					// TODO ERROR inside forgot password. 
+					FileHelper.errorMessage("Error", "Error finding account with this user information. Please try again. \n" +
+							"If the problem persists, verify your username as well.");
 					e1.printStackTrace();
+					return;
 				}
 				if (acc == null) {
-					//TODO: Prompt the user that the info was incorrect. 
+					FileHelper.infoMessage("Info", "Incorrect account information.");
+					return;
 				}
-				//TODO: Do we as the user to change passwords?
+				//TODO: Do we ask the user to change passwords?
 				
 				
 				curAccount = acc;
@@ -163,11 +188,15 @@ public class Controller {
 		ActionListener submitAccountInfo = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {		
 				//TODO: Verify the information. formatting, etc.
+				
+				
 				String secCode = null;
 				try {
 					secCode = Serializer.generateAccoutSerializerString();
 				} catch (Exception e1) {
-					// TODO Auto-generated catch block
+					FileHelper.errorMessage("Error", "There has been an issue with serialization.\n" +
+							"Our appologies, this fault is on our end. \n" +
+							"Please try again. " + e1);
 					e1.printStackTrace();
 				}
 				//create new account object
@@ -218,8 +247,7 @@ public class Controller {
 		signInWindow = 
 				new WindowSignIn(submitSignIn, forgotPasswordStateChange,createAccountStateChange);
 		signInWindow.setVisible(true);
-		//TODO: Forgotpassword window!! 
-		//forgotPasswordWindow = new forgotPasswordWindow();
+		forgotPasswordWindow = new WindowForgotPassword(submitForgotPassword, signInStateChange);
 		createAccountWindow = new WindowCreateAccount(submitCreateAccount, 
 				signInStateChange, forgotPasswordStateChange);
 		accountInfoWindow = new WindowAccountInfo(submitAccountInfo);

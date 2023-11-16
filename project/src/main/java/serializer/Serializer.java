@@ -82,6 +82,24 @@ public class Serializer {
 		return null;
 	}
 	
+	public static ArrayList<String> accountExistsGetQuestions(String username) throws Exception {
+		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
+		ArrayList<String> questions = new ArrayList<String>();
+		
+		//See if the accounts list contains the username. 
+		for (AccountInfo acc : accounts) {
+			if (acc.getName().equals(username)) {
+				System.out.println("Finding questions");
+				questions.add(acc.getSecQ1());
+				questions.add(acc.getSecQ2());
+				questions.add(acc.getSecQ3());
+				return questions;
+			}
+		}
+		
+		return null;
+	}
+	
 	public static AccountInfo forgotPassword(String userName, String secAnswers) throws Exception{
 		//search through accounts till you find the right one. 
 		//get the accounts. 
@@ -91,14 +109,23 @@ public class Serializer {
 		for (AccountInfo acc : accounts) {
 			
 			//get security code
-			String secCode = decryptString(acc.getSecCodeAns(), secAnswers);
+			System.out.println("decrypting " + acc.getSecCodeAns() + "\n With: " + secAnswers + "\n username: " + userName);
+			String secCode = null;
+			try {
+				secCode = decryptString(acc.getSecCodeAns(), secAnswers);
+			} catch (Exception e) {
+				//Exception could be due to incorrect security answers, or corrupted data. 
+				return null;
+			}
 			//compare usernames. 
-			if (acc.getName().equals(userName)) {
+			if (secCode != null && acc.getName().equals(userName)) {
 				//compare security questions. 
+				System.out.println("Checking security answers");
 				if (secAnswers.contains(decryptString(acc.getSecAns1(), secCode)) && 
 						secAnswers.contains(decryptString(acc.getSecAns2(), secCode)) &&
 						secAnswers.contains(decryptString(acc.getSecAns3(), secCode)))
 					return decryptAccountInfo(acc, secCode);
+				
 			}
 		}
 		return null;
