@@ -25,8 +25,33 @@ import serializer.Serializer;
  * 
  * 
  * TODO:
- * 1. Set up the account info window. This needs to be able to update user information, but NOT PASSWORD. currently, user password is used in encryption.
- * 2. Set up required formatting for different fields, and could use JPasswordField for password security. 
+ * 1. Test current encryption. The process should be:
+ * 		-User creates a new account, 
+ * 			-Serialized info: Password, password security code, security answers security code, and all 3 security answers.
+ * 			-unserialized info: Account user name, all 3 security questions
+ * 			-The two security code answers are the same but one is serialized with the password and the other the security questions. This allows for account recovery. 
+ * 		- Log in
+ * 			- Serializer class searches for account name, then deserializes the security code and uses that deserialized code to deserialize and compare stored password. 
+ * 		- Forgot password
+ * 			- Find the security questions for the given account name. 
+ * 			- combine all the security answers into one string and try to deserialize the security code. use that deserialized security code to check if the security answers match. 
+ * 
+ * 2. Optional: Set up required formatting for different fields, and could use JPasswordField for password security. 
+ * 3. Ensure that an account name can only be used once. i.e. only one Bob.
+ * 4. Optional: OOP!!! Separate fields and utilize Object Oriented Programming to declutter and organize. 
+ * 5. verify that the account manager works, changing all fields correctly. 
+ * 6. Figure out what kinds of files we can serialize and deserialize. Change the file opener to reflect this. 
+ * 7. Exception checking track. Ensure user is warned of errors. 
+ * 8. Comment on every function. 
+ * 
+ * 
+ * TODO GUI:
+ * 1. Fix the fields, currently you have to delete the old text inside. 
+ * 2. Fix/test the hide password option, there was a bug that screwed up placement/submission. 
+ * 3. center and beautify. 
+ * 4. What are we doing with the homescreen? A nice file browser would be nice, but not really necessary. Approach this last. 
+ * 5. Lock icon should be inside the resources folder. This is just proper Maven file structure. 
+ * 
  * 
  * 
  * Future steps:
