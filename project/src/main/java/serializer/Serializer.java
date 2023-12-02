@@ -175,6 +175,16 @@ public class Serializer {
 		StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();
 		encryptor.setPassword(password);
 		
+		//get file name and extension.
+		int dotIndex = p.toFile().getName().lastIndexOf('.');
+		String name = (dotIndex == -1) ? "" : p.toFile().getName().substring(0, dotIndex);
+		String ext = (dotIndex == -1) ? "" : p.toFile().getName().substring(dotIndex + 1);
+		if (name.isEmpty() || ext.isEmpty()) {
+			FileHelper.errorMessage("Error", "Unable to retrieve file information " + p.getFileName() + ". ");
+			return;
+		}
+		System.out.println("Got the info: " + name + " and " + ext);
+		
 		
 		byte[] data = null;
 		try {
@@ -183,10 +193,11 @@ public class Serializer {
 			// TODO Auto-generated catch block
 			FileHelper.errorMessage("Error", "Unable to open the selected file " + p.getFileName() + ". " + e);
 			e.printStackTrace();
+			return;
 		}
 		
 		//create new file for the serialized information
-		String outputFile = homeDir + "/testing_serialized.txt";
+		String outputFile = homeDir + "/" + name + "_serialized." + ext;
 		try {
 			Files.write(Paths.get(outputFile), encryptor.encrypt(data));
 		} catch (Exception e) {
@@ -214,6 +225,16 @@ public class Serializer {
 		StandardPBEByteEncryptor encryptor = new StandardPBEByteEncryptor();
 		encryptor.setPassword(password);
 		
+		//get file name and extension.
+		int dotIndex = p.toFile().getName().lastIndexOf('.');
+		String name = (dotIndex == -1) ? "" : p.toFile().getName().substring(0, dotIndex).replace("_serialized", "");
+		String ext = (dotIndex == -1) ? "" : p.toFile().getName().substring(dotIndex + 1);
+		if (name.isEmpty() || ext.isEmpty()) {
+			FileHelper.errorMessage("Error", "Unable to retrieve file information " + p.getFileName() + ". ");
+			return;
+		}
+		System.out.println("Got the info: " + name + " and " + ext);
+		
 		byte[] data = null;
 		try {
 			data = Files.readAllBytes(p);
@@ -224,7 +245,7 @@ public class Serializer {
 		}
 		
 		//create new file for the serialized information
-		String outputFile = homeDir + "/testing_deserialized.txt";
+		String outputFile = homeDir + "/" + name + "." + ext;
 		System.out.println("will deserialize to: " + outputFile);
 		try {
 			Files.write(Paths.get(outputFile), encryptor.decrypt(data));

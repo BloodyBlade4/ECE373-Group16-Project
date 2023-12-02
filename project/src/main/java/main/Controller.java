@@ -40,12 +40,11 @@ import serializer.Serializer;
 
  * 4. Optional: OOP!!! Separate fields and utilize Object Oriented Programming to declutter and organize. 
  * 5. verify that the account manager works, changing all fields correctly. 
- * 6. Figure out what kinds of files we can serialize and deserialize. Change the file opener to reflect this. 
  * 7. Exception checking track. Ensure user is warned of errors. 
  * 8. Comment on every function. 
  * 
  * TODO, From project review:
- * 1. #6 in the above. Expand file encryption. 
+ * 1. XXX DONE XXX #6 in the above. Expand file encryption. 
  * 2. Delete the Account class
  * 3. Comments on all classes, methods
  * 4. XXX DONE XXXX Trying to reset the password, but not actually resetting it, causes an error. 
@@ -286,8 +285,8 @@ public class Controller {
 		
 		ActionListener encryptFile = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Path toEncryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to encrypt", 
-						"Text files?" , "txt");
+				
+				Path toEncryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to encrypt");
 				if (toEncryptPath == null)
 					return;
 				Serializer.encryptFile(toEncryptPath, curAccount.getSecCodePass(), 
@@ -296,8 +295,7 @@ public class Controller {
 		};
 		ActionListener decryptFile = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				Path toDecryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to decrypt", 
-						"Text files?" , "txt");
+				Path toDecryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to decrypt");
 				if (toDecryptPath == null)
 					return;
 				Serializer.decryptFile(toDecryptPath, curAccount.getSecCodePass(), 

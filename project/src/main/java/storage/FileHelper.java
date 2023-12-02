@@ -9,12 +9,11 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 public class FileHelper {
 	//file selecter gui
-	public static Path selectFile(String openingDirectory, String title, String extDetail, String extName) {
+	public static Path selectFile(String openingDirectory, String title) {
 		File directory = (openingDirectory==null)? new File(System.getProperty("user.dir"))
 												: new File(openingDirectory);
 		JFileChooser chooser = new JFileChooser(directory);
 		chooser.setDialogTitle(title);
-		chooser.addChoosableFileFilter(new FileNameExtensionFilter(extDetail, extName));
 		chooser.setAcceptAllFileFilterUsed(true);
 		
 
