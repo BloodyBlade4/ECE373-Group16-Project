@@ -37,19 +37,37 @@ import serializer.Serializer;
  * 			- combine all the security answers into one string and try to deserialize the security code. use that deserialized security code to check if the security answers match. 
  * 
  * 2. Optional: Set up required formatting for different fields, and could use JPasswordField for password security. 
- * 3. Ensure that an account name can only be used once. i.e. only one Bob.
+
  * 4. Optional: OOP!!! Separate fields and utilize Object Oriented Programming to declutter and organize. 
  * 5. verify that the account manager works, changing all fields correctly. 
  * 6. Figure out what kinds of files we can serialize and deserialize. Change the file opener to reflect this. 
  * 7. Exception checking track. Ensure user is warned of errors. 
  * 8. Comment on every function. 
  * 
+ * TODO, From project review:
+ * 1. #6 in the above. Expand file encryption. 
+ * 2. Delete the Account class
+ * 3. Comments on all classes, methods
+ * 4. XXX DONE XXXX Trying to reset the password, but not actually resetting it, causes an error. 
+ * 5. Manage Account File Directory. 
+ * 6. Manage Account Security questions. 
+ * 
+ * Notes for presentation/commenting, from review: 
+ * 1. Highlight the usecase of security code generation, as Discussed in #1 above. 
+ * 		This is the meat of the program, the strategy.  
+ * 2. Remove "Account" from classes and add in AccountInfo, an object for the account. (Both in a separate place, and used differently) 
+ * 3. Update the class diagram, show associations and teh methods present in each class. 
+ * 4. Exceptions in use cases (Reviewer 3)? 
+ * 5. UML and interaction model. 
+ * 6. Update instructions in the read me to match the change file directory (Code also needs work). 
+ * 
  * 
  * TODO GUI:
  * 1. Fix the fields, currently you have to delete the old text inside. 
  * 2. Fix/test the hide password option, there was a bug that screwed up placement/submission. 
  * 3. center and beautify. 
- * 4. What are we doing with the homescreen? A nice file browser would be nice, but not really necessary. Approach this last. 
+ * 4. What are we doing with the homescreen? A nice file browser would be nice, but not really necessary. 
+ * 		Approach this last. Also, there's a random submit button. XD
  * 5. Lock icon should be inside the resources folder. This is just proper Maven file structure. 
  * 
  * 
@@ -174,6 +192,21 @@ public class Controller {
 				//TODO: Verify the information. formatting, etc. 
 				if (!FileHelper.passwordValid(password))
 					return;
+				
+				//Check that the username is not in use. 
+				try {
+					if (Serializer.accountExists(username))  {
+						FileHelper.infoMessage("Cannot create Account", "The username entered already exists. \nPlease use a different username, or try logging in.");
+						username = null;
+						password = null;
+						return;
+					}
+				} catch (Exception e2) {
+					FileHelper.errorMessage("Error searching database.", "An error occured while checking to see if given account name is available.\nPlease try again.\n" + e2);
+					username = null;
+					password = null;
+					return;
+				}
 				
 				//change state to submitAccountInfo. 
 				hideAllWindows();
@@ -323,13 +356,27 @@ public class Controller {
 				//verify password
 				String oldPass = null;
 				oldPass = JOptionPane.showInputDialog("Please enter current password.");
+				if (oldPass == null)
+					return;
+				
+				//Check against current password. 
+				if (curAccount == null || !curAccount.getPassword().equals(oldPass)) {
+					FileHelper.infoMessage("Incorrect Password", "The password you entered does not match this account.");
+					return;
+				}
+				
 				
 				//allow user to enter in new password. 
 				String newPass = null;
 				newPass = JOptionPane.showInputDialog("Please enter new password.");
+				if (newPass == null) 
+					return;
+				//check against designated password requirements
+				if (!FileHelper.passwordValid(newPass)) 
+					return;
 				
+				//Update info. 
 				curAccount.setPassword(newPass);
-				
 				try {
 					Serializer.changeAccountInfo(curAccount.getName(), curAccount);
 				} catch (Exception e1) {

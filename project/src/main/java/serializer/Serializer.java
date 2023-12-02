@@ -83,7 +83,7 @@ public class Serializer {
 		return null;
 	}
 	
-	//check if the account exists based off a user name. 
+	//Returns the security questions of an account, if the account name exists. 
 	public static ArrayList<String> accountExistsGetQuestions(String username) throws Exception {
 		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
 		ArrayList<String> questions = new ArrayList<String>();
@@ -91,7 +91,6 @@ public class Serializer {
 		//See if the accounts list contains the username. 
 		for (AccountInfo acc : accounts) {
 			if (acc.getName().equals(username)) {
-				System.out.println("Finding questions");
 				questions.add(acc.getSecQ1());
 				questions.add(acc.getSecQ2());
 				questions.add(acc.getSecQ3());
@@ -100,6 +99,20 @@ public class Serializer {
 		}
 		
 		return null;
+	}
+	
+	//check if the account exists based off a user name. 
+	public static Boolean accountExists(String username) throws Exception {
+		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
+		
+		//See if the accounts list contains the username. 
+		for (AccountInfo acc : accounts) {
+			if (acc.getName().equals(username)) {
+				return true;
+			}
+		}
+		
+		return false;
 	}
 	
 	//uses the security questions to access acount information. 
@@ -150,6 +163,7 @@ public class Serializer {
 		}
 		UpdateStorage.writeAccount(accounts);
 	}
+	
 	
 	/* File Handling */
 	//takes the location of the file to encrypt, and the users password.
@@ -228,8 +242,6 @@ public class Serializer {
 			}
 		}		
 	}
-	
-	
 	
 	
 	/*AccountInfo Object handling */
