@@ -67,12 +67,13 @@ public class WindowSignIn extends JFrame {
 		label1.setHorizontalAlignment(SwingConstants.CENTER);
 		label1.setBounds(628, 28, 169, 125);
 		try {
-			ImageIcon Icon = new ImageIcon(new ImageIcon(WindowMenu.class.getResource("Lock Icon.png")).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)); //100, 100 add your own size
+			ImageIcon Icon = new ImageIcon(
+					new ImageIcon(WindowMenu.class.getClassLoader().getResource("Lock Icon.png")).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)
+				); 
 			label1.setIcon(Icon);
 			panelCenter.add(label1);
 		} catch (Exception e) {
-			System.out.println("Unable to locate file");
-			
+			System.out.println("Unable to locate Icon image.\n" + e);
 		}
 
 		

@@ -62,7 +62,9 @@ public class WindowMenu extends JFrame{
 		label1.setHorizontalAlignment(SwingConstants.CENTER);
 		label1.setBounds(628, 28, 169, 125);
 		try {
-			ImageIcon Icon = new ImageIcon(new ImageIcon(WindowMenu.class.getResource("Lock Icon.png")).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)); //100, 100 add your own size
+			ImageIcon Icon = new ImageIcon(
+					new ImageIcon(WindowMenu.class.getClassLoader().getResource("Lock Icon.png")).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)
+				); 
 			label1.setIcon(Icon);
 		} catch (Exception e) {
 			System.out.println("image failed to load.");
@@ -117,10 +119,6 @@ public class WindowMenu extends JFrame{
 		mntmNewMenuItem_2.addActionListener(resetPassword);
 		mntmNewMenuItem_2.setFont(new Font("Avenir Next", Font.PLAIN, 14));
 		mnNewMenu_2.add(mntmNewMenuItem_2);
-		
-		JMenuItem mntmNewMenuItem_3 = new JMenuItem("Change File Directory");
-		mntmNewMenuItem_3.setFont(new Font("Avenir Next", Font.PLAIN, 14));
-		mnNewMenu_2.add(mntmNewMenuItem_3);
 		/* End initialization */
 		
 		

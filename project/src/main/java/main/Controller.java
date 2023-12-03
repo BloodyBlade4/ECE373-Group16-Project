@@ -39,7 +39,7 @@ import serializer.Serializer;
  * 2. Optional: Set up required formatting for different fields, and could use JPasswordField for password security. 
 
  * 4. Optional: OOP!!! Separate fields and utilize Object Oriented Programming to declutter and organize. 
- * 5. verify that the account manager works, changing all fields correctly. 
+
  * 7. Exception checking track. Ensure user is warned of errors. 
  * 8. Comment on every function. 
  * 
@@ -48,8 +48,8 @@ import serializer.Serializer;
  * 2. Delete the Account class
  * 3. Comments on all classes, methods
  * 4. XXX DONE XXXX Trying to reset the password, but not actually resetting it, causes an error. 
- * 5. Manage Account File Directory. 
- * 6. Manage Account Security questions. 
+ * 5. XXX DONE XXX Manage Account File Directory. 
+ * 6. XXX DONE XXX Manage Account Security questions. 
  * 
  * Notes for presentation/commenting, from review: 
  * 1. Highlight the usecase of security code generation, as Discussed in #1 above. 
@@ -67,7 +67,6 @@ import serializer.Serializer;
  * 3. center and beautify. 
  * 4. What are we doing with the homescreen? A nice file browser would be nice, but not really necessary. 
  * 		Approach this last. Also, there's a random submit button. XD
- * 5. Lock icon should be inside the resources folder. This is just proper Maven file structure. 
  * 
  * 
  * 
