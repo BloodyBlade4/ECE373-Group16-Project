@@ -28,7 +28,6 @@ public class UpdateStorage {
 		try {
 			p = findPropertiesFile();
 		} catch (Exception e) {
-			//TODO: Warn the user there is an issue finding the properties file.. 
 			//This could be due to different platforms such as mac/linux. Addapt for these.
 			e.printStackTrace();
 			throw new Exception("Error finding or creating file! " + e);
@@ -48,38 +47,42 @@ public class UpdateStorage {
 			throw new Exception("Error writing to the file. " + e);
 		}		
 	}
+
 	//writes an ecrypted accountInfo LIST to storage. 
-		public static void writeAccount(ArrayList<AccountInfo> encryptedList) throws Exception {
-			//Get file
-			Path p;
-			try {
-				p = findPropertiesFile();
-			} catch (Exception e) {
-				//TODO: Warn the user there is an issue finding the properties file.. 
-				//This could be due to different platforms such as mac/linux. Addapt for these.
-				e.printStackTrace();
-				throw new Exception("Error finding or creating file! " + e);
-			}
-			ObjectMapper mapper = new XmlMapper();
-			mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
-			
-			//rewrite the file with the new account added.
-			try {
-				mapper.writeValue(Files.newOutputStream(p), encryptedList);
-			} catch (Exception e) {
-				e.printStackTrace();
-				throw new Exception("Error writing to the file. " + e);
-			}		
+	public static void writeAccount(ArrayList<AccountInfo> encryptedList) throws Exception {
+		//Get file
+		Path p;
+		try {
+			p = findPropertiesFile();
+		} catch (Exception e) {
+			//This could be due to different platforms such as mac/linux. Addapt for these.
+			e.printStackTrace();
+			throw new Exception("Error finding or creating file! " + e);
 		}
+		ObjectMapper mapper = new XmlMapper();
+		mapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+		
+		//rewrite the file with the new account added.
+		try {
+			mapper.writeValue(Files.newOutputStream(p), encryptedList);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new Exception("Error writing to the file. " + e);
+		}		
+	}
 	
 	//retrieves all the accountInfo's stored in storage. 
 	public static ArrayList<AccountInfo> readAccountStorage(Path p) throws Exception{
+		//Check that the file exists. 
+		if(!Files.exists(p))
+			throw new Exception("Cannot load settings because the settings file path could not be loaded.");
+		
+		//If the file is empty, return an empty list. 
 		if (p.toFile().length() == 0)
 			return new ArrayList<AccountInfo>();
 		
+		//Read the file into an array list.
 		try {
-			if(!Files.exists(p))
-				throw new Exception("Cannot load settings because the settings file path could not be loaded.");
 			ObjectMapper mapper = new XmlMapper(); 
 			TypeReference<ArrayList<AccountInfo>> typeRef = new TypeReference<ArrayList<AccountInfo>>() {};
 			ArrayList<AccountInfo> accounts = mapper.readValue(Files.newInputStream(p), typeRef);

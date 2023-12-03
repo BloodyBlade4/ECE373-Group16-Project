@@ -21,8 +21,7 @@ import storage.UpdateStorage;
  * utilizes Password-Based Encryption (PBE) 
  * For additional information and implementation, refer to Jasypt's official documentation: http://www.jasypt.org/general-usage.html
  * 
- * 
- * ALL exceptions bubbled back up to the caller. 
+ * Many exceptions are bubbled back up to the caller as Jasypt has vague exceptions. A few simple exceptions may be handled here as well.  
  */
 
 public class Serializer {
@@ -59,12 +58,14 @@ public class Serializer {
 	}
 	
 	public static void addAccount(AccountInfo newAccount) throws Exception{
+		//serialize account
 		AccountInfo acc = encryptAccountInfo(newAccount);
 		
 		//Send off to update storage
 		UpdateStorage.writeAccount(acc);
 	}
 	
+	//finds and returns AccountInfo. Returns null if account is not found.
 	public static AccountInfo logIn(String username, String password) throws Exception{
 		//get the accounts. 
 		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
@@ -83,7 +84,7 @@ public class Serializer {
 		return null;
 	}
 	
-	//Returns the security questions of an account, if the account name exists. 
+	//Returns the security questions of an account if the account name exists, else null.
 	public static ArrayList<String> accountExistsGetQuestions(String username) throws Exception {
 		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
 		ArrayList<String> questions = new ArrayList<String>();
@@ -115,7 +116,7 @@ public class Serializer {
 		return false;
 	}
 	
-	//uses the security questions to access acount information. 
+	//uses the security questions to access and return AccountInfo. returns null if invalid. 
 	public static AccountInfo forgotPassword(String userName, String secAnswers) throws Exception{
 		//search through accounts till you find the right one. 
 		//get the accounts. 
@@ -147,10 +148,8 @@ public class Serializer {
 		return null;
 	}
 	
-	//updates a user account based on username. Verification does in controller.
+	//updates a user account based on username. Verification done in controller.
 	public static void changeAccountInfo(String username, AccountInfo acc) throws Exception {
-		
-		
 		//get accounts list:
 		ArrayList<AccountInfo> accounts = UpdateStorage.readAccountStorage(UpdateStorage.findPropertiesFile());
 		
@@ -161,12 +160,12 @@ public class Serializer {
 				break;
 			}
 		}
+		//update
 		UpdateStorage.writeAccount(accounts);
 	}
 	
 	
-	/* File Handling */
-	//takes the location of the file to encrypt, and the users password.
+	/* FILE HANDLING */
 	public void encryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
 		encryptFile(Paths.get(loc), password, deleteOld, homeDir);
 	}
@@ -183,14 +182,12 @@ public class Serializer {
 			FileHelper.errorMessage("Error", "Unable to retrieve file information " + p.getFileName() + ". ");
 			return;
 		}
-		System.out.println("Got the info: " + name + " and " + ext);
 		
-		
+		//read the file
 		byte[] data = null;
 		try {
 			data = Files.readAllBytes(p);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			FileHelper.errorMessage("Error", "Unable to open the selected file " + p.getFileName() + ". " + e);
 			e.printStackTrace();
 			return;
@@ -201,7 +198,6 @@ public class Serializer {
 		try {
 			Files.write(Paths.get(outputFile), encryptor.encrypt(data));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			FileHelper.errorMessage("Error", "Unable to encrypt file. " + e);
 			e.printStackTrace();
 		} 
@@ -216,7 +212,6 @@ public class Serializer {
 		
 	}
 	
-	//takes the location of the file to decrypt, and the users password. 
 	public void decryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
 		decryptFile(Paths.get(loc), password, deleteOld, homeDir);
 	}
@@ -233,24 +228,21 @@ public class Serializer {
 			FileHelper.errorMessage("Error", "Unable to retrieve file information " + p.getFileName() + ". ");
 			return;
 		}
-		System.out.println("Got the info: " + name + " and " + ext);
 		
+		//read the file
 		byte[] data = null;
 		try {
 			data = Files.readAllBytes(p);
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			FileHelper.errorMessage("Error", "Unable to open the selected file " + p.getFileName() + ". " + e);
 			e.printStackTrace();
 		}
 		
 		//create new file for the serialized information
 		String outputFile = homeDir + "/" + name + "." + ext;
-		System.out.println("will deserialize to: " + outputFile);
 		try {
 			Files.write(Paths.get(outputFile), encryptor.decrypt(data));
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			FileHelper.errorMessage("Error", "Unable to decrypt file. " + e);
 			e.printStackTrace();
 		} 
@@ -265,7 +257,7 @@ public class Serializer {
 	}
 	
 	
-	/*AccountInfo Object handling */
+	/* ACCOUNT_INFO HANDLING */
 	private static AccountInfo encryptAccountInfo(AccountInfo account) throws Exception{
 		String password = account.getSecCodePass();
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
@@ -309,7 +301,7 @@ public class Serializer {
 	
 	
 	
-	/* String handling */
+	/* STRING HANDLING */
 	private static String encryptString(String toEncrypt, String password) {
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password

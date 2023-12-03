@@ -1,5 +1,21 @@
 package main;
 
+/*
+ * Main controller for the lockbox application. 
+ * 
+ * Initializes all needed GUI windows, passing actionlisteners to them --waiting for and reacting to events accordingly. 
+ * Communicates with the Serializer class to access, verify, and store information. 
+ * 
+ * EXCEPTIONS:
+ * 	Almost all exceptions are bubbled up into this class. 
+ * 
+ * COMMENTING: 
+ * I truly believe there to be painful, excessive commenting in these files and have done so only for the sake of this course/you. 
+ * the point of function/method/variable names is not just to store variables, but to indicate their intention and use. 
+ * I still could not bring myself to comment on things like "hideAllWindows"
+ */
+
+
 import storage.AccountInfo;
 import storage.FileHelper;
 
@@ -45,7 +61,7 @@ import serializer.Serializer;
  * 
  * TODO, From project review:
  * 1. XXX DONE XXX #6 in the above. Expand file encryption. 
- * 2. Delete the Account class
+ * 2. XXX DONE XXX Delete the Account class
  * 3. Comments on all classes, methods
  * 4. XXX DONE XXXX Trying to reset the password, but not actually resetting it, causes an error. 
  * 5. XXX DONE XXX Manage Account File Directory. 
@@ -98,16 +114,16 @@ public class Controller {
 	
 	
 	public Controller() {
-		System.out.println("Heyo, the program is starting.");
-
-		/*Action listeners for simple page changes*/
+		/* WINDOW CHANGES */
+		//prompt the user for a username, check if it exists. 
+		//If it does, load the security questions for the user to answer. 
 		ActionListener forgotPasswordStateChange = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//Prompt user for username. 
 				String name = null;
 				name = JOptionPane.showInputDialog("Please enter username.");
 				
-				//if username isn't null, open forgot password. 
+				//if username is null, exit. 
 				if (name == null) {
 					return;
 				}
@@ -116,8 +132,10 @@ public class Controller {
 					return;
 				}
 				
+				
 				username = name;
 				ArrayList<String> questions = null;
+				//Get the accountInfo from database. 
 				try {
 					questions = Serializer.accountExistsGetQuestions(name);
 				} catch (Exception e1) {
@@ -125,24 +143,28 @@ public class Controller {
 					e1.printStackTrace();
 					return;
 				}
+				//Account not found? exit. 
 				if (questions == null || questions.isEmpty()) {
 					System.out.println("Questions weren't found!");
 					FileHelper.infoMessage("Info", "Account not found. This could be due to incorrect username or corrupted data.");
 					return;
 				}
 				
+				//Fill and open ForgotPasswordWindow, hide all others. 
 				forgotPasswordWindow.setAllQuestions(questions);
-				
 				hideAllWindows();
 				forgotPasswordWindow.setVisible(true);
 			}
 		};
+		
+		//Change to WindowCreateAccount. 
 		ActionListener createAccountStateChange = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hideAllWindows();
 				createAccountWindow.setVisible(true);
 			}
 		};
+		//Change to WindowSignIn. 
 		ActionListener signInStateChange = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				hideAllWindows();
@@ -152,7 +174,9 @@ public class Controller {
 
 		
 		
+		/* SUBMIT FORMS */
 		//Get the user information from textfields, search for that user in the database.
+		//If account found, log in and go to the Main Menu Window. 
 		ActionListener submitSignIn = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String username = signInWindow.getTextFieldUsername().getText();
@@ -174,20 +198,21 @@ public class Controller {
 					FileHelper.infoMessage("Info", "Account information is incorrect.");
 					return;
 				}
-				curAccount = account;
 				
+				//set account, load WindowMenu. 
+				curAccount = account;
 				hideAllWindows();
 				menuWindow.setVisible(true);
 			}
 		};
 		
-		//submits username and password for a new account, passing onto the accountinfo window.
+		//submits username and password for a new account, passing onto the accountinfo window if valid.
 		ActionListener submitCreateAccount = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				username = createAccountWindow.getTextFieldUsername().getText();
 				password = createAccountWindow.getTextFieldPassword().getText();
 				
-				//TODO: Verify the information. formatting, etc. 
+				//check if info is valid. 
 				if (!FileHelper.passwordValid(password))
 					return;
 				
@@ -214,9 +239,17 @@ public class Controller {
 		//Gets the final questions needed for a new account, then adds the user to the database. 
 		ActionListener submitAccountInfo = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {		
-				//TODO: Verify the information. formatting, etc.
+				//Check that no field is empty/null
+				if (accountInfoWindow.getTextFieldSecQOne().getText().isBlank() || accountInfoWindow.getTextFieldSecAOne().getText().isBlank() ||
+						accountInfoWindow.getTextFieldSecQTwo().getText().isBlank() || accountInfoWindow.getTextFieldSecATwo().getText().isBlank() ||
+						accountInfoWindow.getTextFieldSecQThree().getText().isBlank() || accountInfoWindow.getTextFieldSecAThree().getText().isBlank() ||
+						accountInfoWindow.getHomeDir().isBlank()) {
+					FileHelper.infoMessage("Invalid field(s)", "One or more field is blank or only contains white space.\n" +
+						"The Security questions are just as important as a password, please fill out the fields carefully.");
+					return;
+				}
 				
-				
+				//generate a security code for the account. 
 				String secCode = null;
 				try {
 					secCode = Serializer.generateAccoutSerializerString();
@@ -226,6 +259,7 @@ public class Controller {
 							"Please try again. " + e1);
 					e1.printStackTrace();
 				}
+				
 				//create new account object
 				curAccount = new AccountInfo(username, password,
 						accountInfoWindow.getTextFieldSecQOne().getText(), accountInfoWindow.getTextFieldSecAOne().getText(),
@@ -242,16 +276,17 @@ public class Controller {
 					return;
 				}
 				
+				//Open Menu Window. 
 				hideAllWindows();
 				menuWindow.setVisible(true);
 			}
 		};
 		
-		//grabs the info from the gui and checks the database for the correct user, and checks that the information is correct. 
+		//grabs the security answers from the window and passes them to the serializer.
+		//The serializer finds the account and tries to deserialize the account "securityAnswers-SecurityCode", secCode serialized with the sequirity answers.
+		//The deserialized secCode is then used to compare data. If correct, change password and move into the main menu.  
 		ActionListener submitForgotPassword = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO: Formatting, again. 
-				
 				//Get the security question answers from user. 
 				String ansOne = forgotPasswordWindow.getAns1();
 				String ansTwo = forgotPasswordWindow.getAns2();
@@ -263,7 +298,6 @@ public class Controller {
 				try {
 					acc = Serializer.forgotPassword(username, pass);
 				} catch (Exception e1) {
-					// TODO ERROR inside forgot password. 
 					FileHelper.errorMessage("Error", "Error finding account with this user information. Please try again. \n" +
 							"If the problem persists, verify your username as well.");
 					e1.printStackTrace();
@@ -273,15 +307,39 @@ public class Controller {
 					FileHelper.infoMessage("Info", "Incorrect account information.");
 					return;
 				}
-				//TODO: Do we ask the user to change passwords?
+				//Prompt user for a new password
+				String newPassword = null;
+				newPassword = JOptionPane.showInputDialog("Please enter a new Password.");
 				
+				//check that the new Password is valid
+				if (newPassword.isBlank()) {
+					FileHelper.infoMessage("Info", "Please enter a valid password.");
+					return;
+				}
+				if (!FileHelper.passwordValid(newPassword))
+					return;
 				
+				//update account password. 
+				acc.setPassword(newPassword);
+				try {
+					Serializer.changeAccountInfo(acc.getName(), acc);
+				} catch (Exception e1) {
+					FileHelper.errorMessage("Error", "There has been an error while trying to update your account password. \nPlease try again. " + e1);
+					return;
+				}
+				
+				//Change to Menu Window. 
 				curAccount = acc;
 				hideAllWindows();
 				menuWindow.setVisible(true);
 			}
 		};
 		
+		
+		
+		
+		/* MAIN MENU ACTION LISTENERS */
+		//Opens gui for user to select a file to encrypt. Sends the file location off to the Serializer encryptFile function.
 		ActionListener encryptFile = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
@@ -292,6 +350,7 @@ public class Controller {
 						false /*delete old*/, curAccount.getHomeDirectory());
 			}
 		};
+		//Opens gui for user to select a file to decrypt. Sends the file locaiton off to the Serializer decryptFile function.
 		ActionListener decryptFile = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				Path toDecryptPath = FileHelper.selectFile(curAccount.getHomeDirectory(), "Select a file to decrypt");
@@ -302,8 +361,7 @@ public class Controller {
 			}
 		};
 		
-		
-		
+		//Opens the security preferences window, to change security questions or home directory. 
 		ActionListener openSecurityPreferences = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				//set fields accordingly. 
@@ -326,9 +384,26 @@ public class Controller {
 		};
 		ActionListener submitUpdateAccountInfo = new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//TODO: verify password
+				//verify password
+				String pass = null;
+				pass = JOptionPane.showInputDialog("Please enter current password.");
+				if (pass == null)
+					return;
+				//Check against current password. 
+				if (curAccount == null || !curAccount.getPassword().equals(pass)) {
+					FileHelper.infoMessage("Incorrect Password", "The password you entered does not match this account.");
+					return;
+				}
 				
-				//TODO: formatting checks?
+				//Check that no field is empty/null
+				if (accountInfoWindow.getTextFieldSecQOne().getText().isBlank() || accountInfoWindow.getTextFieldSecAOne().getText().isBlank() ||
+						accountInfoWindow.getTextFieldSecQTwo().getText().isBlank() || accountInfoWindow.getTextFieldSecATwo().getText().isBlank() ||
+						accountInfoWindow.getTextFieldSecQThree().getText().isBlank() || accountInfoWindow.getTextFieldSecAThree().getText().isBlank() ||
+						accountInfoWindow.getHomeDir().isBlank()) {
+					FileHelper.infoMessage("Invalid field(s)", "One or more field is blank or only contains white space.\n" +
+						"The Security questions are just as important as a password, please fill out the fields carefully.");
+					return;
+				}
 				
 				//grab information
 				curAccount = new AccountInfo(curAccount.getName(), curAccount.getPassword(),
@@ -362,13 +437,12 @@ public class Controller {
 					return;
 				}
 				
-				
 				//allow user to enter in new password. 
 				String newPass = null;
 				newPass = JOptionPane.showInputDialog("Please enter new password.");
 				if (newPass == null) 
 					return;
-				//check against designated password requirements
+				//check against password requirements
 				if (!FileHelper.passwordValid(newPass)) 
 					return;
 				
@@ -384,18 +458,16 @@ public class Controller {
 		};
 
 		
-		/* Windows */
+		/* WINDOWS */
 		signInWindow = 
 				new WindowSignIn(submitSignIn, forgotPasswordStateChange,createAccountStateChange);
 		signInWindow.setVisible(true);
 		forgotPasswordWindow = new WindowForgotPassword(submitForgotPassword, signInStateChange);
 		createAccountWindow = new WindowCreateAccount(submitCreateAccount, 
 				signInStateChange, forgotPasswordStateChange);
-		accountInfoWindow = new WindowAccountInfo(submitAccountInfo);
+		accountInfoWindow = new WindowAccountInfo("Create Account", submitAccountInfo);
 		menuWindow = new WindowMenu(openSecurityPreferences, resetPassword, encryptFile, decryptFile);
-		securityPreferencesWindow = new WindowAccountInfo(submitUpdateAccountInfo);
-		
-		
+		securityPreferencesWindow = new WindowAccountInfo("Security Preferences", submitUpdateAccountInfo);
 	}
 	
 	private void hideAllWindows() {

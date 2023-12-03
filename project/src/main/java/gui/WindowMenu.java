@@ -3,26 +3,22 @@ package gui;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-
-import javax.swing.JFrame;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JPanel;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Image;
 import java.awt.Label;
 import java.awt.event.ActionListener;
 
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import java.awt.event.ActionEvent;
-import javax.swing.JMenuItem;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JSeparator;
-import javax.swing.JMenuBar;
 import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JPanel;
+import javax.swing.JSeparator;
+import javax.swing.SwingConstants;
 
 public class WindowMenu extends JFrame{
 	

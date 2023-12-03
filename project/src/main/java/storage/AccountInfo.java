@@ -7,7 +7,6 @@ public class AccountInfo {
 	private String name = "", password = "";
 	private String homeDirectory = "";
 	
-	//Desired level of security???
 	private String secCodePass = "";
 	private String secCodeAns = "";
 	
@@ -35,11 +34,6 @@ public class AccountInfo {
 		this.secCodeAns = securityCodeAns;
 	}
 	
-	/*
-	public String InfoAsString() {
-		return (name+","+password+","+secQ1+","+secAns1);
-	}
-	*/
 	public void printInfo() {
 		System.out.println("Account info is: " + 
 				"\nName: " + this.name +
