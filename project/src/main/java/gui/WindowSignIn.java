@@ -55,7 +55,7 @@ public class WindowSignIn extends JFrame {
 		JButton submitButton = new JButton("Sign In");
 		submitButton.addActionListener(submitSignIn);
 		submitButton.setForeground(new Color(46, 139, 87));
-		textFieldUsername = new JTextField();
+		textFieldUsername = Styling.basicTextField("Username");
 		textFieldPassword = new JPasswordField();
 		showPasswordCheckBox = new JCheckBox("");
 		
@@ -94,31 +94,6 @@ public class WindowSignIn extends JFrame {
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldUsername, -50, SpringLayout.EAST, GreenPanel); // right side of text box is x away from right side of green panel
 		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldUsername, 185, SpringLayout.NORTH, GreenPanel);
 		GreenPanel.add(textFieldUsername);
-		textFieldUsername.setHorizontalAlignment(JTextField.CENTER);
-		textFieldUsername.setForeground(Color.GRAY);
-		textFieldUsername.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		textFieldUsername.setText("Username");
-		textFieldUsername.setColumns(10);
-		textFieldUsername.addFocusListener(new FocusAdapter() {
-			// Focus Gained - Username
-			@Override
-			public void focusGained(FocusEvent e) {
-					if(textFieldUsername.getText().equals("Username")) {
-						textFieldUsername.setText(null);
-						textFieldUsername.requestFocus();
-						Styling.removePlaceholderStyle(textFieldUsername);
-					}
-			}
-			
-			// Focus Lost - Username	
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textFieldUsername.getText().length() == 0) {
-					Styling.addPlaceholderStyle(textFieldUsername);
-					textFieldUsername.setText("Username");
-				}
-			}
-		});
 		
 		
 		// Password Field
@@ -132,7 +107,7 @@ public class WindowSignIn extends JFrame {
 		textFieldPassword.setText("Password");
 		textFieldPassword.setColumns(10);
 		textFieldPassword.addFocusListener(new FocusAdapter() {
-			// Focus Gained - Password
+			// Focus Gained - remove default, background text upon focusing on the field. 
 			@Override
 			public void focusGained(FocusEvent e) {
 				if(new String(textFieldPassword.getPassword()).equals("Password")) {
@@ -143,7 +118,7 @@ public class WindowSignIn extends JFrame {
 				}	
 			}
 				
-			// Focus Lost - Password
+			// Focus Lost - Upon loosing focus, enters in the default background text if field is empty 
 			@Override
 			public void focusLost(FocusEvent e) {
 				if(textFieldPassword.getPassword().length == 0) {

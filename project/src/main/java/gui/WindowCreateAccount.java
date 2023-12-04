@@ -49,7 +49,7 @@ public class WindowCreateAccount extends JFrame{
 		JButton CreateButton = new JButton("Create");
 		CreateButton.addActionListener(submitCreateAccount);
 		CreateButton.setForeground(new Color(46, 139, 87));
-		textFieldUsername = new JTextField();
+		textFieldUsername = Styling.basicTextField("Username");
 		textFieldPassword = new JPasswordField();
 		showPasswordCheckBox = new JCheckBox("");
 		
@@ -86,31 +86,6 @@ public class WindowCreateAccount extends JFrame{
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldUsername, -50, SpringLayout.EAST, GreenPanel); // right side of text box is x away from right side of green panel
 		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldUsername, 185, SpringLayout.NORTH, GreenPanel);
 		GreenPanel.add(textFieldUsername);
-		textFieldUsername.setHorizontalAlignment(JTextField.CENTER);
-		textFieldUsername.setForeground(Color.GRAY);
-		textFieldUsername.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		textFieldUsername.setText("Username");
-		textFieldUsername.setColumns(10);
-		textFieldUsername.addFocusListener(new FocusAdapter() {
-			// Focus Gained - Username
-			@Override
-			public void focusGained(FocusEvent e) {
-					if(textFieldUsername.getText().equals("Username")) {
-						textFieldUsername.setText(null);
-						textFieldUsername.requestFocus();
-						Styling.removePlaceholderStyle(textFieldUsername);
-					}
-			}
-			
-			// Focus Lost - Username	
-			@Override
-			public void focusLost(FocusEvent e) {
-				if(textFieldUsername.getText().length() == 0) {
-					Styling.addPlaceholderStyle(textFieldUsername);
-					textFieldUsername.setText("Username");
-				}
-			}
-		});
 		
 		
 		// Password Field

@@ -3,34 +3,33 @@ package gui;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Cursor;
+import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
-import java.awt.SystemColor;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
-import java.awt.Font;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
 
 /*
- * Used for storing GUI styling formats. 
+ * Used for storing GUI styling formats and objects for quick duplication. 
  */
 
 public class Styling {
 	public final static Font headerFont = new Font("Times New Roman", Font.BOLD, 20);
 	
+	//Add the styling used in the placeholder of text fields. 
 	public static void addPlaceholderStyle(JTextField textField) {
         Font font = textField.getFont() ;
         font = font.deriveFont(Font.ITALIC) ;
@@ -38,7 +37,8 @@ public class Styling {
         textField.setForeground(Color.gray);
 
     }
-
+	
+	//Remove the styling used in the placeholder of text fields. 
     public static void removePlaceholderStyle(JTextField textField) {
         Font font = textField.getFont() ;
         font = font.deriveFont(Font.PLAIN) ;
@@ -46,7 +46,7 @@ public class Styling {
         textField.setForeground(Color.black);
     }
 	
-	
+	//Navigation button. Styling. Accepts a string for what the button is to say. 
 	public final static JButton navigationButton(String text) {
 		JButton btn = new JButton("<HTML><U>" + text + "</U></HTML>");
 		btn.setForeground(new Color(0, 128, 255));
@@ -55,8 +55,13 @@ public class Styling {
 		btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		return btn;
 	}
-
 	
+	public final static JTextField basicTextField(String text) {
+		return new BasicTextField(text);
+	}
+
+	//returns the decorative panel used on different welcome screens.
+	//accepts a list of navigation buttons to be added to the footer. 
 	public final static JPanel rightSideOfForms(ArrayList<JButton> btnList) {
 
 		JPanel GreyPanel = new JPanel();
@@ -97,6 +102,8 @@ public class Styling {
 		lblNewLabel.setForeground(new Color(46, 139, 87));
 		lblNewLabel.setFont(new Font("Avenir Next", Font.PLAIN, 60));
 		
+		//For every btn given add to the footer. 
+		//These are the navigation buttons. 
 		for (JButton btn : btnList) {
 			footer.add(btn);
 		}
@@ -109,7 +116,6 @@ public class Styling {
 		} catch (Exception e) {
 			System.out.println("Unable to load image.");
 		}
-		//MainPanel.add(GreenPanel);
 		return GreyPanel;
 	}
 	
@@ -120,11 +126,8 @@ public class Styling {
 	
 }
 
-//Gradient
+//Gradient background for the Sign in, ForgotPassword, create account, and account info windows. 
 class GradientPanel extends JPanel {
-    /**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Override
@@ -139,4 +142,42 @@ class GradientPanel extends JPanel {
         g2d.setPaint(gp);
         g2d.fillRect(0, 0, w, h);
     }
+}
+
+//Generates a text field used for many different formats, such as username or security questions. 
+//Accepts text for the default text in the field, which will disappear when the text field is selected. 
+class BasicTextField extends JTextField {
+	private static final long serialVersionUID = 1L;
+	private JTextField curTextField;
+	public BasicTextField(final String text) {
+		//reference
+		curTextField = this;
+		//styling
+		this.setHorizontalAlignment(JTextField.CENTER);
+		this.setForeground(Color.GRAY);
+		this.setFont(new Font("Avenir Next", Font.PLAIN, 13));
+		this.setText(text);
+		this.setColumns(10);
+		
+		this.addFocusListener(new FocusAdapter() {
+			// Focus Gained - Hide the background text if it's equal to the default text.
+			@Override
+			public void focusGained(FocusEvent e) {
+					if(curTextField.getText().equals(text)) {
+						curTextField.setText(null);
+						curTextField.requestFocus();
+						Styling.removePlaceholderStyle(curTextField);
+					}
+			}
+			
+			// Focus Lost - replace the background text if the field is empty. 
+			@Override
+			public void focusLost(FocusEvent e) {
+				if(curTextField.getText().length() == 0) {
+					Styling.addPlaceholderStyle(curTextField);
+					curTextField.setText(text);
+				}
+			}
+		});
+	}
 }

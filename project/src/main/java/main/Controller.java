@@ -243,7 +243,7 @@ public class Controller {
 				if (accountInfoWindow.getTextFieldSecQOne().getText().isBlank() || accountInfoWindow.getTextFieldSecAOne().getText().isBlank() ||
 						accountInfoWindow.getTextFieldSecQTwo().getText().isBlank() || accountInfoWindow.getTextFieldSecATwo().getText().isBlank() ||
 						accountInfoWindow.getTextFieldSecQThree().getText().isBlank() || accountInfoWindow.getTextFieldSecAThree().getText().isBlank() ||
-						accountInfoWindow.getHomeDir().isBlank()) {
+						accountInfoWindow.getHomeDir().isBlank() || accountInfoWindow.getHomeDir().equals("No directory selected")) {
 					FileHelper.infoMessage("Invalid field(s)", "One or more field is blank or only contains white space.\n" +
 						"The Security questions are just as important as a password, please fill out the fields carefully.");
 					return;

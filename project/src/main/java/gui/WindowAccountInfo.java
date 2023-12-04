@@ -1,146 +1,145 @@
 package gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.SystemColor;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 
-import javax.swing.BoxLayout;
-import javax.swing.DropMode;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 
 /* Follows account creation for further information. */
 
 public class WindowAccountInfo extends JFrame{
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
-	/*private JTextField textFieldSecQOne;
+	private JTextField textFieldSecQOne;
 	private JTextField textFieldSecAOne;
-	
 	private JTextField textFieldSecQTwo;
 	private JTextField textFieldSecATwo;
 	private JTextField textFieldSecQThree;
-	private JTextField textFieldSecAThree;*/
-	
-	private PannelField QOne, QTwo, QThree;
-	
+	private JTextField textFieldSecAThree;
 	private JLabel lblHomeDir;
 	
 	public WindowAccountInfo(String title, ActionListener submitAccountInfo) {
+		/* INITIALIZATION */
 		super(title);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(300, 400);
-		this.setLocationRelativeTo(null);
-		this.setMinimumSize(new Dimension(400,450));
-		
-		JPanel panelCenter = new JPanel();
-		SpringLayout sl_panelCenter = new SpringLayout();
-		panelCenter.setLayout(sl_panelCenter);
-		
-		JSeparator separator = new JSeparator();
-		sl_panelCenter.putConstraint(SpringLayout.NORTH, separator, 0, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.WEST, separator, 0, SpringLayout.WEST, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.SOUTH, separator, 1, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.EAST, separator, 400, SpringLayout.WEST, panelCenter);
-		panelCenter.add(separator);
-		
+		this.setSize(900, 540);
 
+		this.setLocationRelativeTo(null); //Center of screen.
+		getContentPane().setLayout(new BorderLayout(0, 0));
+		this.setResizable(false);
+		/* End initialization */
 		
-		QOne = new PannelField("Security Question 1", "", "");
-		sl_panelCenter.putConstraint(SpringLayout.NORTH, QOne, 0, SpringLayout.SOUTH, separator);
-		QOne.textFieldTwo.setForeground(Color.GRAY);
-		QOne.textFieldTwo.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		QOne.textFieldOne.setForeground(Color.GRAY);
-		QOne.textFieldOne.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		QOne.textFieldTwo.setText("Answer");
-		QOne.textFieldTwo.setDropMode(DropMode.INSERT);
-		QOne.textFieldOne.setDropMode(DropMode.INSERT);
-		QOne.textFieldOne.setText("Question");
-		sl_panelCenter.putConstraint(SpringLayout.WEST, QOne, 100, SpringLayout.WEST, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.EAST, QOne, 300, SpringLayout.WEST, panelCenter);
-		panelCenter.add(QOne);
-		QTwo = new PannelField("Security Question 2", "", "");
-		QTwo.textFieldTwo.setForeground(Color.GRAY);
-		QTwo.textFieldTwo.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		QTwo.textFieldTwo.setText("Answer");
-		QTwo.textFieldOne.setForeground(Color.GRAY);
-		QTwo.textFieldOne.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		QTwo.textFieldOne.setText("Question");
-		sl_panelCenter.putConstraint(SpringLayout.NORTH, QTwo, 89, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.WEST, QTwo, 100, SpringLayout.WEST, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.EAST, QTwo, 300, SpringLayout.WEST, panelCenter);
-		panelCenter.add(QTwo);
-		QThree = new PannelField("Security Question 3", "", "");
-		sl_panelCenter.putConstraint(SpringLayout.NORTH, QThree, 177, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.SOUTH, QOne, -84, SpringLayout.NORTH, QThree);
-		QThree.textFieldTwo.setForeground(Color.GRAY);
-		QThree.textFieldTwo.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		QThree.textFieldTwo.setText("Answer");
-		QThree.textFieldOne.setForeground(Color.GRAY);
-		QThree.textFieldOne.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		QThree.textFieldOne.setText("Question");
-		sl_panelCenter.putConstraint(SpringLayout.WEST, QThree, 100, SpringLayout.WEST, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.EAST, QThree, 300, SpringLayout.WEST, panelCenter);
-		panelCenter.add(QThree);
-		//panelCenter.add(new PannelField("Security question 2:", "Question", textFieldSecQTwo, "Answer", textFieldSecATwo));
-		//panelCenter.add(new PannelField("Security question 3:", "Question", textFieldSecQThree, "Answer", textFieldSecAThree));
+		// DECLARATIONS //
+		//Integer distances between gui objects. 
+		final int DIST_RELATED = 10;
+		final int DIST_SEPARATE = 25;
 		
+		JPanel MainPanel = new JPanel();
+		JPanel GreenPanel = Styling.createGradientPanel();
 		
-		JButton btnSubmit = new JButton("Submit");
-		sl_panelCenter.putConstraint(SpringLayout.SOUTH, QThree, -61, SpringLayout.NORTH, btnSubmit);
-		sl_panelCenter.putConstraint(SpringLayout.EAST, btnSubmit, -160, SpringLayout.EAST, panelCenter);
-		btnSubmit.setForeground(new Color(46, 139, 87));
-		btnSubmit.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		sl_panelCenter.putConstraint(SpringLayout.NORTH, btnSubmit, 330, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.WEST, btnSubmit, 155, SpringLayout.WEST, panelCenter);
-		btnSubmit.addActionListener(submitAccountInfo);
+		textFieldSecQOne = Styling.basicTextField("Question One");
+		textFieldSecAOne = Styling.basicTextField("Answer");
 		
-		JPanel panelHomeDirectory = new JPanel();
-		sl_panelCenter.putConstraint(SpringLayout.SOUTH, QTwo, -84, SpringLayout.NORTH, panelHomeDirectory);
-		sl_panelCenter.putConstraint(SpringLayout.NORTH, panelHomeDirectory, 265, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.WEST, panelHomeDirectory, 0, SpringLayout.WEST, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.SOUTH, panelHomeDirectory, 330, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.EAST, panelHomeDirectory, 400, SpringLayout.WEST, panelCenter);
-		panelCenter.add(panelHomeDirectory);
-		panelHomeDirectory.setLayout(new BoxLayout(panelHomeDirectory, BoxLayout.Y_AXIS));
+		textFieldSecQTwo = Styling.basicTextField("Question Two");
+		textFieldSecATwo = Styling.basicTextField("Answer");
 		
-		JPanel panel = new JPanel();
-		panelHomeDirectory.add(panel);
-		
-		JLabel lblNewLabel_2 = new JLabel("Home Directory:");
-		lblNewLabel_2.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		panel.add(lblNewLabel_2);
-		
-		JButton btnNewButton = new JButton("Search");
-		btnNewButton.setForeground(new Color(46, 139, 87));
-		btnNewButton.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		
-		panel.add(btnNewButton);
-		
-		JPanel panel_1 = new JPanel();
-		panelHomeDirectory.add(panel_1);
+		textFieldSecQThree = Styling.basicTextField("Question Three");
+		textFieldSecAThree = Styling.basicTextField("Answer");
 		
 		lblHomeDir = new JLabel("No directory selected");
-		lblHomeDir.setFont(new Font("Avenir Next", Font.BOLD, 13));;
-		panel_1.add(lblHomeDir);
-		btnSubmit.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panelCenter.add(btnSubmit);
+		JButton btnSelectHomeDir = new JButton("Search");
 		
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton CreateButton = new JButton("Submit");
+		CreateButton.addActionListener(submitAccountInfo);
+		CreateButton.setForeground(new Color(46, 139, 87));
+
+		JPanel GreyPanel = Styling.rightSideOfForms(new ArrayList<JButton>());
+		MainPanel.add(GreyPanel);
+
+		
+				
+		// PANELS //
+		
+		// Main Panel
+		MainPanel.setBackground(Color.WHITE);
+		MainPanel.setPreferredSize(new java.awt.Dimension(900, 500));
+		MainPanel.setRequestFocusEnabled(false);
+		getContentPane().add(MainPanel, BorderLayout.NORTH);
+		MainPanel.setLayout(null);
+		SpringLayout sl_GreenPanel = new SpringLayout();
+		
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, GreenPanel, 5, SpringLayout.NORTH, MainPanel);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, GreenPanel, 200, SpringLayout.WEST, MainPanel);
+		
+		// Green Panel
+		GreenPanel.setBackground(SystemColor.textHighlight);
+		GreenPanel.setBounds(0, 0, 300, 500);
+		MainPanel.add(GreenPanel);
+		GreenPanel.setLayout(sl_GreenPanel);
+		
+		// FIELDS //
+		// Question 1 Field
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecQOne, 50, SpringLayout.WEST, GreenPanel); // left side of text box
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecQOne, -50, SpringLayout.EAST, GreenPanel); // right side of text box is x away from right side of green panel
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecQOne, 75, SpringLayout.NORTH, GreenPanel);
+		GreenPanel.add(textFieldSecQOne);
+		
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecAOne, DIST_RELATED, SpringLayout.SOUTH, textFieldSecQOne);
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecAOne, -50, SpringLayout.EAST, GreenPanel);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecAOne, 50, SpringLayout.WEST, GreenPanel);
+		GreenPanel.add(textFieldSecAOne);
+		
+		// Question 2 Field
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecQTwo, DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecAOne);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecQTwo, 50, SpringLayout.WEST, GreenPanel); // left side of text box
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecQTwo, -50, SpringLayout.EAST, GreenPanel); // right side of text box is x away from right side of green panel
+		GreenPanel.add(textFieldSecQTwo);
+		
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecATwo, DIST_RELATED, SpringLayout.SOUTH, textFieldSecQTwo);
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecATwo, -50, SpringLayout.EAST, GreenPanel);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecATwo, 50, SpringLayout.WEST, GreenPanel);
+		GreenPanel.add(textFieldSecATwo);
+		
+		// Question 3 Field
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecQThree, DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecATwo);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecQThree, 50, SpringLayout.WEST, GreenPanel); // left side of text box
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecQThree, -50, SpringLayout.EAST, GreenPanel); // right side of text box is x away from right side of green panel
+		GreenPanel.add(textFieldSecQThree);
+		
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecAThree, DIST_RELATED, SpringLayout.SOUTH, textFieldSecQThree);
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecAThree, -50, SpringLayout.EAST, GreenPanel);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecAThree, 50, SpringLayout.WEST, GreenPanel);
+		GreenPanel.add(textFieldSecAThree);
+		
+		// OTHER ELEMENTS //
+		
+		//HomeDir label
+		lblHomeDir.setFont(new Font("Avenir Next", Font.BOLD, 13));
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, lblHomeDir, DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecAThree);
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, lblHomeDir, 0, SpringLayout.EAST, GreenPanel);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, lblHomeDir, 0, SpringLayout.WEST, GreenPanel);
+		lblHomeDir.setHorizontalAlignment(JLabel.CENTER);
+		GreenPanel.add(lblHomeDir);
+		
+		//HomeDir button
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, btnSelectHomeDir, DIST_RELATED, SpringLayout.SOUTH, lblHomeDir);
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, btnSelectHomeDir, -50, SpringLayout.EAST, GreenPanel);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, btnSelectHomeDir, 50, SpringLayout.WEST, GreenPanel);
+		btnSelectHomeDir.setForeground(new Color(46, 139, 87));
+		btnSelectHomeDir.setFont(new Font("Avenir Next", Font.PLAIN, 13));
+		GreenPanel.add(btnSelectHomeDir);
+		btnSelectHomeDir.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				try {
 					String p = selectDirectory();
@@ -154,23 +153,14 @@ public class WindowAccountInfo extends JFrame{
 			}
 		});
 		
-		JSeparator separator_1 = new JSeparator();
-		sl_panelCenter.putConstraint(SpringLayout.SOUTH, btnSubmit, 0, SpringLayout.NORTH, separator_1);
-		sl_panelCenter.putConstraint(SpringLayout.NORTH, separator_1, 359, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.WEST, separator_1, 0, SpringLayout.WEST, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.SOUTH, separator_1, 360, SpringLayout.NORTH, panelCenter);
-		sl_panelCenter.putConstraint(SpringLayout.EAST, separator_1, 400, SpringLayout.WEST, panelCenter);
-		panelCenter.add(separator_1);
-		GroupLayout groupLayout = new GroupLayout(getContentPane());
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(panelCenter, GroupLayout.PREFERRED_SIZE, 400, GroupLayout.PREFERRED_SIZE)
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addComponent(panelCenter, GroupLayout.PREFERRED_SIZE, 422, GroupLayout.PREFERRED_SIZE)
-		);
-		getContentPane().setLayout(groupLayout);
+		
+		
+		// Create Button
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, CreateButton, DIST_SEPARATE, SpringLayout.SOUTH, btnSelectHomeDir);
+		sl_GreenPanel.putConstraint(SpringLayout.EAST, CreateButton, 0, SpringLayout.EAST, textFieldSecQOne);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, CreateButton, 0, SpringLayout.WEST, textFieldSecQOne);
+		CreateButton.setFont(new Font("Avenir Next", Font.PLAIN, 13));
+		GreenPanel.add(CreateButton);
 	}
 	
 	//Prompts the user to select a directory for their home directory. 
@@ -192,10 +182,6 @@ public class WindowAccountInfo extends JFrame{
 		chooser.setDialogTitle("Select a directory.");
 		chooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
 		
-		//Filtering option.
-		//if (extDetail != null && extName != null)
-			//chooser.setFileFilter(new FileNameExtensionFilter(extDetail, extName));
-		
 		int option = chooser.showOpenDialog(null);
 		if(option == JFileChooser.APPROVE_OPTION) 
 			return chooser.getSelectedFile().getAbsolutePath();
@@ -203,45 +189,45 @@ public class WindowAccountInfo extends JFrame{
 	}
 	
 	public JTextField getTextFieldSecQOne() {
-		return QOne.textFieldOne;
+		return this.textFieldSecQOne;
 	}
 	public void setTextFieldSecQOne(String text) {
-		QOne.textFieldOne.setText(text);
+		this.textFieldSecQOne.setText(text);
 	}
 
 	public JTextField getTextFieldSecAOne() {
-		return QOne.textFieldTwo;
+		return this.textFieldSecAOne;
 	}
 	public void setTextFieldSecAOne(String text) {
-		QOne.textFieldTwo.setText(text);;
+		this.textFieldSecAOne.setText(text);;
 	}
 
 	public JTextField getTextFieldSecQTwo() {
-		return QTwo.textFieldOne;
+		return this.textFieldSecQTwo;
 	}
 	public void setTextFieldSecQTwo(String text) {
-		QTwo.textFieldOne.setText(text);
+		this.textFieldSecQTwo.setText(text);
 	}
 
 	public JTextField getTextFieldSecATwo() {
-		return QTwo.textFieldTwo;
+		return this.textFieldSecATwo;
 	}
 	public void setTextFieldSecATwo(String text) {
-		QTwo.textFieldTwo.setText(text);
+		this.textFieldSecATwo.setText(text);
 	}
 
 	public JTextField getTextFieldSecQThree() {
-		return QThree.textFieldOne;
+		return this.textFieldSecQThree;
 	}
 	public void setTextFieldSecQThree(String text) {
-		QThree.textFieldOne.setText(text);
+		this.textFieldSecQThree.setText(text);
 	}
 
 	public JTextField getTextFieldSecAThree() {
-		return QThree.textFieldTwo;
+		return this.textFieldSecAThree;
 	}
 	public void setTextFieldSecAThree(String text) {
-		QThree.textFieldTwo.setText(text);
+		this.textFieldSecAThree.setText(text);
 	}
 	
 	public String getHomeDir() {
@@ -249,47 +235,5 @@ public class WindowAccountInfo extends JFrame{
 	}
 	public void setHomeDir(String text) {
 		lblHomeDir.setText(text);
-	}
-}
-
-//A work in progress for GUI implementation. 
-class PannelField extends JPanel{
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-	public JTextField textFieldOne, textFieldTwo;
-	
-	public PannelField(String title, String lblOne, String lblTwo) {
-		//JPanel panelFields = new JPanel();
-		//panelCenter.add(panelFields);
-		this.setLayout(new BoxLayout(this, BoxLayout.Y_AXIS));
-		
-		JLabel lblNewLabel = new JLabel(title);
-		lblNewLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
-		this.add(lblNewLabel);
-		
-		JPanel panelField = new JPanel();
-		panelField.setMaximumSize(new Dimension(200, 30));
-		this.add(panelField);
-		
-		JLabel lblNewLabel_1 = new JLabel(lblOne);
-		panelField.add(lblNewLabel_1);
-		
-		textFieldOne = new JTextField();
-		textFieldOne.setColumns(10);
-		panelField.add(textFieldOne);
-
-		
-		JPanel panelField_1 = new JPanel();
-		panelField_1.setMaximumSize(new Dimension(200, 30));
-		this.add(panelField_1);
-		
-		JLabel lblNewLabel_1_2_3 = new JLabel(lblTwo);
-		panelField_1.add(lblNewLabel_1_2_3);
-		
-		textFieldTwo = new JTextField();
-		textFieldTwo.setColumns(10);
-		panelField_1.add(textFieldTwo);
 	}
 }
