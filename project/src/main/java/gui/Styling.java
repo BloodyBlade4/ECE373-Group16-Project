@@ -28,6 +28,24 @@ import javax.swing.SwingConstants;
 
 public class Styling {
 	public final static Font headerFont = new Font("Times New Roman", Font.BOLD, 20);
+	//Integer distances between gui objects used for Spring Layouts. 
+	public final static int DIST_RELATED = 10;
+	public final static int DIST_SEPARATE = 25;
+	
+	public final static Image LOGO_IMAGE = logoImage();
+	
+	//find the logo image upon start up. 
+	private static Image logoImage() {
+		try{ 
+			return new ImageIcon(Styling.class.getClassLoader().getResource("Lock Icon.png"))
+					.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT);
+		} catch (Exception e) {
+			System.out.println("Unable to load image.");
+		}
+		return null;
+	}
+	
+
 	
 	//Add the styling used in the placeholder of text fields. 
 	public static void addPlaceholderStyle(JTextField textField) {
@@ -54,6 +72,15 @@ public class Styling {
 		btn.setBorder(BorderFactory.createEmptyBorder());
 		btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		return btn;
+	}
+	
+	public final static JLabel basicLabel(String text) {
+		JLabel res = new JLabel(text);
+		res.setHorizontalAlignment(JTextField.CENTER);
+		res.setForeground(Color.WHITE);
+		res.setFont(new Font("Avenir Next", Font.PLAIN, 13));
+		res.setText(text);
+		return res;
 	}
 	
 	public final static JTextField basicTextField(String text) {
@@ -108,14 +135,8 @@ public class Styling {
 			footer.add(btn);
 		}
 		
-		try {
-			ImageIcon Icon = new ImageIcon(
-					new ImageIcon(WindowMenu.class.getClassLoader().getResource("Lock Icon.png")).getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT)
-				); 
-			Logo.setIcon(Icon);	
-		} catch (Exception e) {
-			System.out.println("Unable to load image.");
-		}
+		Logo.setIcon(new ImageIcon(LOGO_IMAGE));
+
 		return GreyPanel;
 	}
 	

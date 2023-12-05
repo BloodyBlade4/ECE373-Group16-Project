@@ -48,16 +48,8 @@ public class FileHelper {
 	public static Boolean passwordValid(String password) {
 		//check for password length
 		boolean validCheck = false;
-		if (password.length () >= 8) {
+		if (password != null && password.length () >= 8) {
 			validCheck = true;
-			//check for a mix of uppercase, lowercase, digits, and special characters
-			/*For part 2. Password security?
-			 * if (password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]+$") == true) {
-				validCheck = true;
-			}
-			else {
-				infoMessage("Info", "Password must have a mix of uppercase, lowercase, digits, and special characters");
-			}*/
 		}
 		else {
 			infoMessage("Info", "Password must be at least 8 characters long");

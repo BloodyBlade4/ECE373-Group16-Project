@@ -34,6 +34,7 @@ public class WindowAccountInfo extends JFrame{
 		super(title);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(900, 540);
+		this.setIconImage(Styling.LOGO_IMAGE);
 
 		this.setLocationRelativeTo(null); //Center of screen.
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -41,10 +42,6 @@ public class WindowAccountInfo extends JFrame{
 		/* End initialization */
 		
 		// DECLARATIONS //
-		//Integer distances between gui objects. 
-		final int DIST_RELATED = 10;
-		final int DIST_SEPARATE = 25;
-		
 		JPanel MainPanel = new JPanel();
 		JPanel GreenPanel = Styling.createGradientPanel();
 		
@@ -95,29 +92,29 @@ public class WindowAccountInfo extends JFrame{
 		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecQOne, 75, SpringLayout.NORTH, GreenPanel);
 		GreenPanel.add(textFieldSecQOne);
 		
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecAOne, DIST_RELATED, SpringLayout.SOUTH, textFieldSecQOne);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecAOne, Styling.DIST_RELATED, SpringLayout.SOUTH, textFieldSecQOne);
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecAOne, -50, SpringLayout.EAST, GreenPanel);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecAOne, 50, SpringLayout.WEST, GreenPanel);
 		GreenPanel.add(textFieldSecAOne);
 		
 		// Question 2 Field
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecQTwo, DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecAOne);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecQTwo, Styling.DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecAOne);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecQTwo, 50, SpringLayout.WEST, GreenPanel); // left side of text box
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecQTwo, -50, SpringLayout.EAST, GreenPanel); // right side of text box is x away from right side of green panel
 		GreenPanel.add(textFieldSecQTwo);
 		
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecATwo, DIST_RELATED, SpringLayout.SOUTH, textFieldSecQTwo);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecATwo, Styling.DIST_RELATED, SpringLayout.SOUTH, textFieldSecQTwo);
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecATwo, -50, SpringLayout.EAST, GreenPanel);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecATwo, 50, SpringLayout.WEST, GreenPanel);
 		GreenPanel.add(textFieldSecATwo);
 		
 		// Question 3 Field
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecQThree, DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecATwo);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecQThree, Styling.DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecATwo);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecQThree, 50, SpringLayout.WEST, GreenPanel); // left side of text box
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecQThree, -50, SpringLayout.EAST, GreenPanel); // right side of text box is x away from right side of green panel
 		GreenPanel.add(textFieldSecQThree);
 		
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecAThree, DIST_RELATED, SpringLayout.SOUTH, textFieldSecQThree);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldSecAThree, Styling.DIST_RELATED, SpringLayout.SOUTH, textFieldSecQThree);
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldSecAThree, -50, SpringLayout.EAST, GreenPanel);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldSecAThree, 50, SpringLayout.WEST, GreenPanel);
 		GreenPanel.add(textFieldSecAThree);
@@ -126,14 +123,14 @@ public class WindowAccountInfo extends JFrame{
 		
 		//HomeDir label
 		lblHomeDir.setFont(new Font("Avenir Next", Font.BOLD, 13));
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, lblHomeDir, DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecAThree);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, lblHomeDir, Styling.DIST_SEPARATE, SpringLayout.SOUTH, textFieldSecAThree);
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, lblHomeDir, 0, SpringLayout.EAST, GreenPanel);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, lblHomeDir, 0, SpringLayout.WEST, GreenPanel);
 		lblHomeDir.setHorizontalAlignment(JLabel.CENTER);
 		GreenPanel.add(lblHomeDir);
 		
 		//HomeDir button
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, btnSelectHomeDir, DIST_RELATED, SpringLayout.SOUTH, lblHomeDir);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, btnSelectHomeDir, Styling.DIST_RELATED, SpringLayout.SOUTH, lblHomeDir);
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, btnSelectHomeDir, -50, SpringLayout.EAST, GreenPanel);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, btnSelectHomeDir, 50, SpringLayout.WEST, GreenPanel);
 		btnSelectHomeDir.setForeground(new Color(46, 139, 87));
@@ -156,7 +153,7 @@ public class WindowAccountInfo extends JFrame{
 		
 		
 		// Create Button
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, CreateButton, DIST_SEPARATE, SpringLayout.SOUTH, btnSelectHomeDir);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, CreateButton, Styling.DIST_SEPARATE, SpringLayout.SOUTH, btnSelectHomeDir);
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, CreateButton, 0, SpringLayout.EAST, textFieldSecQOne);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, CreateButton, 0, SpringLayout.WEST, textFieldSecQOne);
 		CreateButton.setFont(new Font("Avenir Next", Font.PLAIN, 13));

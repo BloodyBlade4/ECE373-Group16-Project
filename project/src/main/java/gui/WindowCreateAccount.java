@@ -37,6 +37,7 @@ public class WindowCreateAccount extends JFrame{
 		super("Create Account");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(900, 540);
+		this.setIconImage(Styling.LOGO_IMAGE);
 
 		this.setLocationRelativeTo(null); //Center of screen.
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -89,7 +90,7 @@ public class WindowCreateAccount extends JFrame{
 		
 		
 		// Password Field
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldPassword, 10, SpringLayout.SOUTH, textFieldUsername);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldPassword, Styling.DIST_RELATED, SpringLayout.SOUTH, textFieldUsername);
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldPassword, -50, SpringLayout.EAST, GreenPanel);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldPassword, 50, SpringLayout.WEST, GreenPanel);
 		GreenPanel.add(textFieldPassword);
@@ -99,7 +100,7 @@ public class WindowCreateAccount extends JFrame{
 		textFieldPassword.setText("Password");
 		textFieldPassword.setColumns(10);
 		textFieldPassword.addFocusListener(new FocusAdapter() {
-			// Focus Gained - Password
+			// Focus Gained - remove default, background text upon focusing on the field. 
 			@Override
 			public void focusGained(FocusEvent e) {
 				if(new String(textFieldPassword.getPassword()).equals("Password")) {
@@ -110,7 +111,7 @@ public class WindowCreateAccount extends JFrame{
 				}	
 			}
 				
-			// Focus Lost - Password
+			// Focus Lost - Upon loosing focus, enters in the default background text if field is empty 
 			@Override
 			public void focusLost(FocusEvent e) {
 				if(textFieldPassword.getPassword().length == 0) {
@@ -129,7 +130,7 @@ public class WindowCreateAccount extends JFrame{
 		// Checkbox
 		sl_GreenPanel.putConstraint(SpringLayout.SOUTH, showPasswordCheckBox, 0, SpringLayout.SOUTH, textFieldPassword);
 		sl_GreenPanel.putConstraint(SpringLayout.NORTH, showPasswordCheckBox, 0, SpringLayout.NORTH, textFieldPassword);
-		sl_GreenPanel.putConstraint(SpringLayout.WEST, showPasswordCheckBox, 10, SpringLayout.EAST, textFieldPassword);
+		sl_GreenPanel.putConstraint(SpringLayout.WEST, showPasswordCheckBox, Styling.DIST_RELATED, SpringLayout.EAST, textFieldPassword);
 		GreenPanel.add(showPasswordCheckBox);
 		showPasswordCheckBox.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		
@@ -138,7 +139,7 @@ public class WindowCreateAccount extends JFrame{
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, CreateButton, 0, SpringLayout.EAST, textFieldPassword);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, CreateButton, 0, SpringLayout.WEST, textFieldPassword);
 		CreateButton.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, CreateButton, 10, SpringLayout.SOUTH, textFieldPassword);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, CreateButton, Styling.DIST_RELATED, SpringLayout.SOUTH, textFieldPassword);
 		GreenPanel.add(CreateButton);
 		showPasswordCheckBox.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {

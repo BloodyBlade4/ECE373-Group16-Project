@@ -10,7 +10,6 @@ import java.awt.Label;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
-import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -21,11 +20,9 @@ import javax.swing.JSeparator;
 import javax.swing.SwingConstants;
 
 public class WindowMenu extends JFrame{
-	
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
+	
+	public Label welcomeMessage;
 
 	public WindowMenu(ActionListener openSecurityPreferences, ActionListener resetPassword, ActionListener encryptFile, ActionListener decryptFile) {
 		/* INITIALIZATION */
@@ -36,20 +33,18 @@ public class WindowMenu extends JFrame{
 		this.setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		this.setMinimumSize(new Dimension(400,450));
+		this.setIconImage(Styling.LOGO_IMAGE);
 		
 		JPanel panelHeader = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panelHeader.getLayout();
 		flowLayout.setVgap(10);
 		getContentPane().add(panelHeader, BorderLayout.NORTH);
 		
-		Label label = new Label("Welcome, user");	// TODO change "user" to user's name
-		label.setAlignment(Label.CENTER);
-		label.setFont(new Font("Avenir Next", Font.PLAIN, 14));
-		label.setForeground(Color.DARK_GRAY);
-		panelHeader.add(label);
-		
-		JPanel panelLeft = new JPanel();
-		getContentPane().add(panelLeft, BorderLayout.WEST);
+		welcomeMessage = new Label("Welcome");	// TODO change "user" to user's name
+		welcomeMessage.setAlignment(Label.CENTER);
+		welcomeMessage.setFont(new Font("Avenir Next", Font.PLAIN, 14));
+		welcomeMessage.setForeground(Color.DARK_GRAY);
+		panelHeader.add(welcomeMessage);
 		
 		JPanel panelCenter = new JPanel();
 		getContentPane().add(panelCenter, BorderLayout.CENTER);
@@ -77,14 +72,6 @@ public class WindowMenu extends JFrame{
 
 		panelCenter.add(label1);
 		
-		JPanel panelFooter = new JPanel();
-		getContentPane().add(panelFooter, BorderLayout.SOUTH);
-		
-		JButton btnNewButton = new JButton("Submit");
-		btnNewButton.setForeground(new Color(46, 139, 87));
-		btnNewButton.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		panelFooter.add(btnNewButton);
-		
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		
@@ -111,7 +98,7 @@ public class WindowMenu extends JFrame{
 		mntmNewMenuItem_1.setFont(new Font("Avenir Next", Font.PLAIN, 14));
 		mnNewMenu_2.add(mntmNewMenuItem_1);
 		
-		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Reset Password");
+		JMenuItem mntmNewMenuItem_2 = new JMenuItem("Change Password");
 		mntmNewMenuItem_2.addActionListener(resetPassword);
 		mntmNewMenuItem_2.setFont(new Font("Avenir Next", Font.PLAIN, 14));
 		mnNewMenu_2.add(mntmNewMenuItem_2);

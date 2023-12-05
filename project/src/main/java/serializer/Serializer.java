@@ -124,20 +124,19 @@ public class Serializer {
 		
 		//See if the accounts list contains the username. 
 		for (AccountInfo acc : accounts) {
-			
+			if (acc == null || acc.getSecCodeAns() == null)
+				continue;
 			//get security code
-			System.out.println("decrypting " + acc.getSecCodeAns() + "\n With: " + secAnswers + "\n username: " + userName);
 			String secCode = null;
 			try {
 				secCode = decryptString(acc.getSecCodeAns(), secAnswers);
 			} catch (Exception e) {
 				//Exception could be due to incorrect security answers, or corrupted data. 
-				return null;
+				continue;
 			}
 			//compare usernames. 
 			if (secCode != null && acc.getName().equals(userName)) {
 				//compare security questions. 
-				System.out.println("Checking security answers");
 				if (secAnswers.contains(decryptString(acc.getSecAns1(), secCode)) && 
 						secAnswers.contains(decryptString(acc.getSecAns2(), secCode)) &&
 						secAnswers.contains(decryptString(acc.getSecAns3(), secCode)))
@@ -309,6 +308,8 @@ public class Serializer {
 		return encryptor.encrypt(toEncrypt);
 	}
 	private static String decryptString(String toDecrypt, String password) {
+		if (toDecrypt == null || password == null)
+			return null;
 		StandardPBEStringEncryptor encryptor = new StandardPBEStringEncryptor();
 		encryptor.setPassword(password);                         // we HAVE TO set a password
 		

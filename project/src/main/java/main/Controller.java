@@ -3,45 +3,18 @@ package main;
 /*
  * Main controller for the lockbox application. 
  * 
- * Initializes all needed GUI windows, passing actionlisteners to them --waiting for and reacting to events accordingly. 
+ * Initializes all needed GUI windows, passing action listeners to them --waiting for and reacting to events accordingly. 
  * Communicates with the Serializer class to access, verify, and store information. 
  * 
  * EXCEPTIONS:
- * 	Almost all exceptions are bubbled up into this class. 
+ * 	Almost all exceptions are bubbled up into this class to prompt the user and/or handle the exception appropriately. 
  * 
  * COMMENTING: 
  * I truly believe there to be painful, excessive commenting in these files and have done so only for the sake of this course/you. 
  * the point of function/method/variable names is not just to store variables, but to indicate their intention and use. 
  * I still could not bring myself to comment on things like "hideAllWindows"
- */
-
-
-import storage.AccountInfo;
-import storage.FileHelper;
-
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.nio.file.Path;
-import java.util.ArrayList;
-
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
-
-import gui.WindowAccountInfo;
-import gui.WindowCreateAccount;
-import gui.WindowForgotPassword;
-import gui.WindowMenu;
-import gui.WindowSignIn;
-import serializer.Serializer;
-
-
-/*	Program notes:
- * - descriptions are often left to the names of function, as comments inside show execution and the name is descriptive enough. 
  * 
- * 
- * 
- * TODO:
- * 1. Test current encryption. The process should be:
+ * ENCRYPTION:
  * 		-User creates a new account, 
  * 			-Serialized info: Password, password security code, security answers security code, and all 3 security answers.
  * 			-unserialized info: Account user name, all 3 security questions
@@ -52,46 +25,32 @@ import serializer.Serializer;
  * 			- Find the security questions for the given account name. 
  * 			- combine all the security answers into one string and try to deserialize the security code. use that deserialized security code to check if the security answers match. 
  * 
- * 2. Optional: Set up required formatting for different fields, and could use JPasswordField for password security. 
-
- * 4. Optional: OOP!!! Separate fields and utilize Object Oriented Programming to declutter and organize. 
-
- * 7. Exception checking track. Ensure user is warned of errors. 
- * 8. Comment on every function. 
- * 
- * TODO, From project review:
- * 1. XXX DONE XXX #6 in the above. Expand file encryption. 
- * 2. XXX DONE XXX Delete the Account class
- * 3. Comments on all classes, methods
- * 4. XXX DONE XXXX Trying to reset the password, but not actually resetting it, causes an error. 
- * 5. XXX DONE XXX Manage Account File Directory. 
- * 6. XXX DONE XXX Manage Account Security questions. 
- * 
- * Notes for presentation/commenting, from review: 
- * 1. Highlight the usecase of security code generation, as Discussed in #1 above. 
- * 		This is the meat of the program, the strategy.  
- * 2. Remove "Account" from classes and add in AccountInfo, an object for the account. (Both in a separate place, and used differently) 
- * 3. Update the class diagram, show associations and teh methods present in each class. 
- * 4. Exceptions in use cases (Reviewer 3)? 
- * 5. UML and interaction model. 
- * 6. Update instructions in the read me to match the change file directory (Code also needs work). 
- * 
- * 
- * TODO GUI:
- * 1. Fix the fields, currently you have to delete the old text inside. 
- * 2. Fix/test the hide password option, there was a bug that screwed up placement/submission. 
- * 3. center and beautify. 
- * 4. What are we doing with the homescreen? A nice file browser would be nice, but not really necessary. 
- * 		Approach this last. Also, there's a random submit button. XD
- * 
- * 
- * 
- * Future steps:
- * - continue to follow exceptions through and ensure their keeping.
- * - clean up gui using the styling file.
- * - clean coding using helper funcitons. 
- * - implement the file storage gui
+ * INTENTIAL "MISTAKES":
+ * - Creating an account with "Username" and "Password" as the username and password, or default on the security questions. Perfectly acceptable, saves user time on a secure PC.
+ * 		- My father once had a literal, paid hacker try to access his computer, in-person with a decryption disk, but all the hackers methods couldn't solve his password of "" --of nothing.
+ * 	- 
  */
+
+
+import storage.AccountInfo;
+import storage.FileHelper;
+
+import java.awt.SystemTray;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.nio.file.Path;
+import java.util.ArrayList;
+
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
+import gui.Styling;
+import gui.WindowAccountInfo;
+import gui.WindowCreateAccount;
+import gui.WindowForgotPassword;
+import gui.WindowMenu;
+import gui.WindowSignIn;
+import serializer.Serializer;
 
 public class Controller {
 	/* VARIABLES */
@@ -109,7 +68,16 @@ public class Controller {
 	private AccountInfo curAccount;
 	
 	public static void main(String[] args) {
+		try {
+			SystemTray mainTray = SystemTray.getSystemTray();
+			java.awt.TrayIcon trayIconImage = new java.awt.TrayIcon(Styling.LOGO_IMAGE, "tray icon");
+			mainTray.add(trayIconImage);
+		} catch (Exception e) {
+			System.out.println("Unable to update tray icon");
+		}
+		
 		Controller cont = new Controller();
+
 	}
 	
 	
@@ -145,7 +113,6 @@ public class Controller {
 				}
 				//Account not found? exit. 
 				if (questions == null || questions.isEmpty()) {
-					System.out.println("Questions weren't found!");
 					FileHelper.infoMessage("Info", "Account not found. This could be due to incorrect username or corrupted data.");
 					return;
 				}
@@ -201,6 +168,7 @@ public class Controller {
 				
 				//set account, load WindowMenu. 
 				curAccount = account;
+				setWelcomeMessage();
 				hideAllWindows();
 				menuWindow.setVisible(true);
 			}
@@ -266,7 +234,6 @@ public class Controller {
 						accountInfoWindow.getTextFieldSecQTwo().getText(), accountInfoWindow.getTextFieldSecATwo().getText(),
 						accountInfoWindow.getTextFieldSecQThree().getText(), accountInfoWindow.getTextFieldSecAThree().getText(),
 						accountInfoWindow.getHomeDir(), secCode, secCode);
-
 				//write information to storage
 				try {
 					Serializer.addAccount(curAccount);
@@ -277,6 +244,7 @@ public class Controller {
 				}
 				
 				//Open Menu Window. 
+				setWelcomeMessage();
 				hideAllWindows();
 				menuWindow.setVisible(true);
 			}
@@ -312,12 +280,13 @@ public class Controller {
 				newPassword = JOptionPane.showInputDialog("Please enter a new Password.");
 				
 				//check that the new Password is valid
+				if (newPassword == null || !FileHelper.passwordValid(newPassword))
+					return;
 				if (newPassword.isBlank()) {
 					FileHelper.infoMessage("Info", "Please enter a valid password.");
 					return;
 				}
-				if (!FileHelper.passwordValid(newPassword))
-					return;
+
 				
 				//update account password. 
 				acc.setPassword(newPassword);
@@ -330,6 +299,7 @@ public class Controller {
 				
 				//Change to Menu Window. 
 				curAccount = acc;
+				setWelcomeMessage();
 				hideAllWindows();
 				menuWindow.setVisible(true);
 			}
@@ -396,10 +366,10 @@ public class Controller {
 				}
 				
 				//Check that no field is empty/null
-				if (accountInfoWindow.getTextFieldSecQOne().getText().isBlank() || accountInfoWindow.getTextFieldSecAOne().getText().isBlank() ||
-						accountInfoWindow.getTextFieldSecQTwo().getText().isBlank() || accountInfoWindow.getTextFieldSecATwo().getText().isBlank() ||
-						accountInfoWindow.getTextFieldSecQThree().getText().isBlank() || accountInfoWindow.getTextFieldSecAThree().getText().isBlank() ||
-						accountInfoWindow.getHomeDir().isBlank()) {
+				if (accountInfoWindow.getTextFieldSecQOne().getText().isBlank() || securityPreferencesWindow.getTextFieldSecAOne().getText().isBlank() ||
+						securityPreferencesWindow.getTextFieldSecQTwo().getText().isBlank() || securityPreferencesWindow.getTextFieldSecATwo().getText().isBlank() ||
+						securityPreferencesWindow.getTextFieldSecQThree().getText().isBlank() || securityPreferencesWindow.getTextFieldSecAThree().getText().isBlank() ||
+						securityPreferencesWindow.getHomeDir().isBlank()) {
 					FileHelper.infoMessage("Invalid field(s)", "One or more field is blank or only contains white space.\n" +
 						"The Security questions are just as important as a password, please fill out the fields carefully.");
 					return;
@@ -468,6 +438,11 @@ public class Controller {
 		accountInfoWindow = new WindowAccountInfo("Create Account", submitAccountInfo);
 		menuWindow = new WindowMenu(openSecurityPreferences, resetPassword, encryptFile, decryptFile);
 		securityPreferencesWindow = new WindowAccountInfo("Security Preferences", submitUpdateAccountInfo);
+	}
+	
+	private void setWelcomeMessage() {
+		if (curAccount != null && !curAccount.getName().isEmpty() && menuWindow.welcomeMessage != null)
+			menuWindow.welcomeMessage.setText("Welcome, " + curAccount.getName() + ".");
 	}
 	
 	private void hideAllWindows() {

@@ -23,7 +23,6 @@ import javax.swing.SpringLayout;
 /*
  * Default sign in screen. 
  * 
- * 	Could use the JPasswordField instead of JTextField for password. 
  */
 
 
@@ -43,6 +42,7 @@ public class WindowSignIn extends JFrame {
 		super("Sign In");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(900, 540);
+		this.setIconImage(Styling.LOGO_IMAGE);
 
 		this.setLocationRelativeTo(null); //Center of screen.
 		getContentPane().setLayout(new BorderLayout(0, 0));
@@ -97,7 +97,7 @@ public class WindowSignIn extends JFrame {
 		
 		
 		// Password Field
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldPassword, 10, SpringLayout.SOUTH, textFieldUsername);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, textFieldPassword, Styling.DIST_RELATED, SpringLayout.SOUTH, textFieldUsername);
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, textFieldPassword, -50, SpringLayout.EAST, GreenPanel);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, textFieldPassword, 50, SpringLayout.WEST, GreenPanel);
 		GreenPanel.add(textFieldPassword);
@@ -146,7 +146,7 @@ public class WindowSignIn extends JFrame {
 		sl_GreenPanel.putConstraint(SpringLayout.EAST, submitButton, 0, SpringLayout.EAST, textFieldPassword);
 		sl_GreenPanel.putConstraint(SpringLayout.WEST, submitButton, 0, SpringLayout.WEST, textFieldPassword);
 		submitButton.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		sl_GreenPanel.putConstraint(SpringLayout.NORTH, submitButton, 10, SpringLayout.SOUTH, textFieldPassword);
+		sl_GreenPanel.putConstraint(SpringLayout.NORTH, submitButton, Styling.DIST_RELATED, SpringLayout.SOUTH, textFieldPassword);
 		GreenPanel.add(submitButton);
 		showPasswordCheckBox.addActionListener(new ActionListener() {
 		    public void actionPerformed(ActionEvent e) {
@@ -154,99 +154,6 @@ public class WindowSignIn extends JFrame {
 		        textFieldPassword.setEchoChar(showPasswordCheckBox.isSelected() ? 0 : '*');
 		    }
 		});
-		/*//INITIALIZATION. 
-		super("Sign in");
-		setTitle("Sign In");
-		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		this.setSize(300, 400);
-		this.setLocationRelativeTo(null); //Center of screen.
-		getContentPane().setLayout(new BorderLayout(0, 0));
-		this.setResizable(false);
-		//END initialization.
-		
-		
-		JPanel panelFooter = new JPanel();
-		getContentPane().add(panelFooter, BorderLayout.SOUTH);
-		
-		JLabel lblNewLabel = new JLabel("LockBox");
-		lblNewLabel.setForeground(new Color(46, 139, 87));
-		lblNewLabel.setFont(new Font("Avenir Next", Font.PLAIN, 16));
-		getContentPane().add(lblNewLabel, BorderLayout.NORTH);
-		lblNewLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JPanel panelCenter = new JPanel();
-		getContentPane().add(panelCenter, BorderLayout.CENTER);
-		panelCenter.setLayout(new BoxLayout(panelCenter, BoxLayout.Y_AXIS));
-		panelCenter.setSize(400,400);
-		
-		JSeparator separator = new JSeparator();
-		panelCenter.add(separator);
-		JLabel label1 = new JLabel("");
-		label1.setHorizontalAlignment(SwingConstants.CENTER);
-		label1.setBounds(628, 28, 169, 125);
-		try {
-			ImageIcon Icon = new ImageIcon(
-					new ImageIcon(WindowMenu.class.getClassLoader().getResource("Lock Icon.png")).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)
-				); 
-			label1.setIcon(Icon);
-			panelCenter.add(label1);
-		} catch (Exception e) {
-			System.out.println("Unable to locate Icon image.\n" + e);
-		}
-
-		
-		JSeparator separator_2 = new JSeparator();
-		panelCenter.add(separator_2);
-		
-		JPanel panelFields = new JPanel();
-		panelCenter.add(panelFields);
-		panelFields.setLayout(new BoxLayout(panelFields, BoxLayout.Y_AXIS));
-		
-		//PANEL FIELD here. Duplicate as needed for forms. 
-		JPanel Username = new JPanel();
-		Username.setMaximumSize(new Dimension(200, 30));
-		panelFields.add(Username);
-		
-		textFieldUsername = new JTextField();
-		textFieldUsername.setForeground(Color.GRAY);
-		textFieldUsername.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		textFieldUsername.setText("Username");
-		textFieldUsername.setBackground(Color.WHITE);
-		Username.add(textFieldUsername);
-		textFieldUsername.setColumns(10);
-		//END panel field
-		
-		JPanel Password = new JPanel();
-		Password.setMaximumSize(new Dimension(200, 30));
-		panelFields.add(Password);
-		
-		textFieldPassword = new JTextField();
-		textFieldPassword.setForeground(Color.GRAY);
-		textFieldPassword.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		textFieldPassword.setText("Password");
-		textFieldPassword.setColumns(10);
-		Password.add(textFieldPassword);
-		
-
-		JButton btnSubmit = new JButton("Sign In");
-		btnSubmit.setForeground(new Color(46, 139, 87));
-		btnSubmit.setFont(new Font("Avenir Next", Font.PLAIN, 13));
-		btnSubmit.addActionListener(submitSignIn);
-		btnSubmit.setAlignmentX(Component.CENTER_ALIGNMENT);
-		panelCenter.add(btnSubmit);
-		
-		JSeparator separator_1 = new JSeparator();
-		panelCenter.add(separator_1);
-		
-		JButton btnCreateAccount = Styling.navigationButton("Create Account");
-		btnCreateAccount.addActionListener(createAccountStateChange);
-		panelFooter.add(btnCreateAccount);
-		
-		JButton btnForgotPassword = Styling.navigationButton("Forgot Password");
-		btnForgotPassword.addActionListener(forgotPasswordStateChange);
-		panelFooter.add(btnForgotPassword);
-		/* END buttons */
-		
 	}
 
 	public JTextField getTextFieldUsername() {
