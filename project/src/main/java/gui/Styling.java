@@ -27,7 +27,7 @@ import javax.swing.SwingConstants;
  */
 
 public class Styling {
-	public final static Font headerFont = new Font("Times New Roman", Font.BOLD, 20);
+	public final static Font HEADER_FONT = new Font("Times New Roman", Font.BOLD, 20);
 	//Integer distances between gui objects used for Spring Layouts. 
 	public final static int DIST_RELATED = 10;
 	public final static int DIST_SEPARATE = 25;

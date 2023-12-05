@@ -24,7 +24,8 @@ public class WindowMenu extends JFrame{
 	
 	public Label welcomeMessage;
 
-	public WindowMenu(ActionListener openSecurityPreferences, ActionListener resetPassword, ActionListener encryptFile, ActionListener decryptFile) {
+	public WindowMenu(ActionListener openSecurityPreferences, ActionListener resetPassword, 
+			ActionListener encryptFile, ActionListener decryptFile) {
 		/* INITIALIZATION */
 		super("Main");
 		setTitle("LockBox");
