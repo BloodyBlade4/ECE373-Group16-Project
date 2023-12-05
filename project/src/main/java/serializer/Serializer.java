@@ -211,7 +211,7 @@ public class Serializer {
 		
 	}
 	
-	public void decryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
+	public static void decryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
 		decryptFile(Paths.get(loc), password, deleteOld, homeDir);
 	}
 	public static void decryptFile(Path p, String password, Boolean deleteOld, String homeDir) {
