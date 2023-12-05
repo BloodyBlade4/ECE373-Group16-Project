@@ -165,7 +165,7 @@ public class Serializer {
 	
 	
 	/* FILE HANDLING */
-	public void encryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
+	public static void encryptFile(String loc, String password, Boolean deleteOld, String homeDir) {
 		encryptFile(Paths.get(loc), password, deleteOld, homeDir);
 	}
 	public static void encryptFile(Path p, String password, Boolean deleteOld, String homeDir) {
