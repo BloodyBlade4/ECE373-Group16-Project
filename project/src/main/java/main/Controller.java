@@ -19,6 +19,7 @@ package main;
  * 			-Serialized info: Password, password security code, security answers security code, and all 3 security answers.
  * 			-unserialized info: Account user name, all 3 security questions
  * 			-The two security code answers are the same but one is serialized with the password and the other the security questions. This allows for account recovery. 
+ * 			- Besides the two security codes, all other account data and files are serialized using the security codes. 
  * 		- Log in
  * 			- Serializer class searches for account name, then deserializes the security code and uses that deserialized code to deserialize and compare stored password. 
  * 		- Forgot password
@@ -27,8 +28,9 @@ package main;
  * 
  * INTENTIAL "MISTAKES":
  * - Creating an account with "Username" and "Password" as the username and password, or default on the security questions. Perfectly acceptable, saves user time on a secure PC.
- * 		- My father once had a literal, paid hacker try to access his computer, in-person with a decryption disk, but all the hackers methods couldn't solve his password of "" --of nothing.
- * 	- 
+ * 		- My father once had a literal, paid hacker try to access his computer in-person with a decryption disk, but all the hackers methods couldn't solve his password of "" --of nothing.
+ * 	- Low password criteria. Again, why punish the user, making them use crazy symbols? Just 8 character is enough as a requirement, they can add more if they want. 
+ *  - 
  */
 
 
