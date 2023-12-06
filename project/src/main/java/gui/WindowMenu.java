@@ -5,7 +5,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.Image;
 import java.awt.Label;
 import java.awt.event.ActionListener;
 
@@ -34,7 +33,11 @@ public class WindowMenu extends JFrame{
 		this.setLocationRelativeTo(null);
 		getContentPane().setLayout(new BorderLayout(0, 0));
 		this.setMinimumSize(new Dimension(400,450));
-		this.setIconImage(Styling.LOGO_IMAGE);
+		try {
+			this.setIconImage(Styling.LOGO_IMAGE);
+		} catch (Exception e) {
+			System.out.println("Unable to update logo image.");
+		}
 		
 		JPanel panelHeader = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panelHeader.getLayout();
@@ -54,10 +57,7 @@ public class WindowMenu extends JFrame{
 		label1.setHorizontalAlignment(SwingConstants.CENTER);
 		label1.setBounds(628, 28, 169, 125);
 		try {
-			ImageIcon Icon = new ImageIcon(
-					new ImageIcon(WindowMenu.class.getClassLoader().getResource("Lock Icon.png")).getImage().getScaledInstance(100, 100, Image.SCALE_DEFAULT)
-				); 
-			label1.setIcon(Icon);
+			label1.setIcon(new ImageIcon(Styling.LOGO_IMAGE));
 		} catch (Exception e) {
 			System.out.println("image failed to load.");
 		}

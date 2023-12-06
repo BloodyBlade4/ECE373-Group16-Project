@@ -109,17 +109,25 @@ public class UpdateStorage {
 	}
 	
 	//retrieves the account info storage file. 
-	public static Path findPropertiesFile() throws Exception{
+	public static Path findPropertiesFile()  throws Exception {
 		String DATA_DIR = System.getenv("APPDATA") + "\\LockBox";
 		String DATA_FILE = "/AccountStorage.xml";
 		
 		//Find directory or create it if it doesn't exist.
 		Path dir = Paths.get(DATA_DIR);
-		if (!Files.exists(dir)) {Files.createDirectory(dir);}
+		if (!Files.exists(dir)) {try {
+			Files.createDirectory(dir);
+		} catch (IOException e) {
+			throw new Exception("Unable to create directory for the program settings. Check permissions. " + e);
+		}} 
 		
 		//find file or create it if it doesn't exist.
 		Path file = Paths.get(DATA_DIR + DATA_FILE);
-		if (!Files.exists(file)) {Files.createFile(file);}
+		if (!Files.exists(file)) {try {
+			Files.createFile(file);
+		} catch (IOException e) {
+			throw new Exception("Unable to create program settings file. Check permissions. " + e);
+		}}
 
 		return file;
 	}

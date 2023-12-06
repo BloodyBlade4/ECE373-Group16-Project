@@ -13,6 +13,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -21,6 +22,8 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.SpringLayout;
 import javax.swing.SwingConstants;
+
+import storage.FileHelper;
 
 /*
  * Used for storing GUI styling formats and objects for quick duplication. 
@@ -34,13 +37,23 @@ public class Styling {
 	
 	public final static Image LOGO_IMAGE = logoImage();
 	
-	//find the logo image upon start up. 
+	//find the logo image upon start up. Two methods, one for the IDE and one for the executable jar. 
 	private static Image logoImage() {
 		try{ 
-			return new ImageIcon(Styling.class.getClassLoader().getResource("Lock Icon.png"))
-					.getImage().getScaledInstance(200, 200, Image.SCALE_DEFAULT);
+			//Method for the IDE resources folder. 
+			Image img = ImageIO.read(Styling.class.getClassLoader().getResource("images/Lock Icon.png"));
+			if(img == null)
+				FileHelper.infoMessage("???", "url is empty?");
+			return img.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
 		} catch (Exception e) {
-			System.out.println("Unable to load image.");
+			//Method for the executable jar file.
+			//After many tests, this is the method that worked for the executable, but wouldn't work in Eclipse. 
+			try {
+				Image img = ImageIO.read(Styling.class.getClassLoader().getResource("resources/images/Lock Icon.png"));
+				return img.getScaledInstance(200, 200, Image.SCALE_DEFAULT);
+			} catch(Exception e2) {
+				FileHelper.infoMessage("Waring", "Unable to find the logo for Lockbox. Please excuse the lack of art. " + e);
+			}
 		}
 		return null;
 	}
@@ -134,9 +147,11 @@ public class Styling {
 		for (JButton btn : btnList) {
 			footer.add(btn);
 		}
-		
-		Logo.setIcon(new ImageIcon(LOGO_IMAGE));
-
+		try {
+			Logo.setIcon(new ImageIcon(LOGO_IMAGE));
+		} catch (Exception e) {
+			System.out.println("Unable to load image.");
+		}
 		return GreyPanel;
 	}
 	

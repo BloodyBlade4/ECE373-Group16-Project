@@ -42,7 +42,11 @@ public class WindowSignIn extends JFrame {
 		super("Sign In");
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.setSize(900, 540);
-		this.setIconImage(Styling.LOGO_IMAGE);
+		try {
+			this.setIconImage(Styling.LOGO_IMAGE);
+		} catch (Exception e) {
+			System.out.println("Unable to update logo image.");
+		}
 
 		this.setLocationRelativeTo(null); //Center of screen.
 		getContentPane().setLayout(new BorderLayout(0, 0));

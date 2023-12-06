@@ -72,14 +72,19 @@ public class Controller {
 	public static void main(String[] args) {
 		try {
 			SystemTray mainTray = SystemTray.getSystemTray();
-			java.awt.TrayIcon trayIconImage = new java.awt.TrayIcon(Styling.LOGO_IMAGE, "tray icon");
-			mainTray.add(trayIconImage);
+			if (Styling.LOGO_IMAGE != null) {
+				java.awt.TrayIcon trayIconImage = new java.awt.TrayIcon(Styling.LOGO_IMAGE, "tray icon");
+				mainTray.add(trayIconImage);
+			}
 		} catch (Exception e) {
 			System.out.println("Unable to update tray icon");
+			FileHelper.errorMessage("Error", "There has been an error loading the icon: " + e);
 		}
-		
-		Controller cont = new Controller();
-
+		try {
+			Controller cont = new Controller();
+		} catch (Exception e1) {
+			FileHelper.errorMessage("Error", "There has been an error starting the program: " + e1);
+		}
 	}
 	
 	
@@ -109,7 +114,7 @@ public class Controller {
 				try {
 					questions = Serializer.accountExistsGetQuestions(name);
 				} catch (Exception e1) {
-					FileHelper.infoMessage("Info", "Account not found. This could be due to incorrect username or corrupted data.");
+					FileHelper.infoMessage("Info", "Account not found. This could be due to incorrect username or corrupted data." + e1);
 					e1.printStackTrace();
 					return;
 				}
@@ -157,6 +162,7 @@ public class Controller {
 					account = Serializer.logIn(username, password);
 				} catch (Exception e1) {
 					FileHelper.errorMessage("Error", "There has been an issue compairing your information with the information on this device."+
+							"\nThis could be due to incorrect password or corrupted data." +
 							"\nPlease try again. \n" + e1);
 					return;
 				}
